@@ -1,5 +1,4 @@
 ﻿using JCMG.JTween;
-using UnityEditor;
 using UnityEngine;
 
 namespace SampleContent
@@ -11,10 +10,14 @@ namespace SampleContent
 			transform.RotateY(180, 1, EaseType.Linear, LoopType.Restart, -1);
 		}
 
+		#if UNITY_EDITOR
+
 		private void OnDrawGizmos()
 		{
-			Handles.color = Color.green;
-			Handles.DrawWireDisc(transform.position, Vector3.up, 1f);
+			UnityEditor.Handles.color = Color.green;
+			UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.up, 1f);
 		}
+
+		#endif
 	}
 }

@@ -10,8 +10,11 @@ namespace SampleContent
 		[Serializable]
 		private enum TestingMode
 		{
-			Capacity,
-			Intermittent,
+			CapacitySingle,
+			CapacityBatch,
+			IntermittentSingle,
+			IntermittentBatch,
+			MultipleJobs,
 			MultipleTargetedTransform,
 			VisuallyInteresting
 		}
@@ -88,7 +91,7 @@ namespace SampleContent
 		[SerializeField]
 		protected float _delay = 5f;
 
-		protected List<Transform> trs;
+		protected Transform[] trs;
 
 		protected WaitForSeconds _waitWhileTweensComplete;
 		protected WaitForSeconds _delayWaitToStartTween;
@@ -103,11 +106,20 @@ namespace SampleContent
 		{
 			switch (_mode)
 			{
-				case TestingMode.Capacity:
-					CreateLargeNumberOfTransformTweens();
+				case TestingMode.CapacitySingle:
+					CreateLargeNumberOfSingleTransformTweens();
 					break;
-				case TestingMode.Intermittent:
-					CreateIntermittentTransformTweens();
+				case TestingMode.CapacityBatch:
+					CreateLargeNumberOfBatchTransformTweens();
+					break;
+				case TestingMode.IntermittentSingle:
+					CreateIntermittentSingleTransformTweens();
+					break;
+				case TestingMode.IntermittentBatch:
+					CreateIntermittentBatchTransformTweens();
+					break;
+				case TestingMode.MultipleJobs:
+					CreateSingleAndBatchTweens();
 					break;
 				case TestingMode.MultipleTargetedTransform:
 					CreateMultipleTargetedTweens();
@@ -122,47 +134,81 @@ namespace SampleContent
 
 		protected virtual void CreateMultipleTargetedTweens()
 		{
-			trs = new List<Transform>();
+			trs = new Transform[1];
 			var obj = Instantiate(_moveGameObject, Vector3.zero, Quaternion.identity);
-			trs.Add(obj.transform);
+			trs[0] = obj.transform;
 		}
 
-		protected virtual void CreateLargeNumberOfTransformTweens()
+		protected virtual void CreateLargeNumberOfSingleTransformTweens()
 		{
-			trs = new List<Transform>(_rowColumnLength * _rowColumnLength);
+			trs = new Transform[_rowColumnLength * _rowColumnLength];
 			for (var i = 0; i < _rowColumnLength; i++)
 			{
 				for (var j = 0; j < _rowColumnLength; j++)
 				{
 					var position = new Vector3(_startX + i * _spacing, _startY + j * _spacing);
 					var obj = Instantiate(_moveGameObject, position, Quaternion.identity);
-					trs.Add(obj.transform);
+					var index = i * _rowColumnLength + j;
+					trs[index] = obj.transform;
 				}
 			}
 		}
 
-		protected void CompleteTweenTest()
+		protected virtual void CreateLargeNumberOfBatchTransformTweens()
 		{
-			Debug.Log("Completed Tweens!");
-			#if UNITY_EDITOR
-			UnityEditor.EditorApplication.isPaused = true;
-			#endif
+			trs = new Transform[_rowColumnLength * _rowColumnLength];
+			for (var i = 0; i < _rowColumnLength; i++)
+			{
+				for (var j = 0; j < _rowColumnLength; j++)
+				{
+					var position = new Vector3(_startX + i * _spacing, _startY + j * _spacing);
+					var obj = Instantiate(_moveGameObject, position, Quaternion.identity);
+					var index = i * _rowColumnLength + j;
+					trs[index] = obj.transform;
+				}
+			}
 		}
 
-		protected virtual void CreateIntermittentTransformTweens()
+		protected virtual void CreateIntermittentSingleTransformTweens()
 		{
-			trs = new List<Transform>(_capacity);
+			trs = new Transform[_capacity];
 			for (var i = 0; i < _capacity; i++)
 			{
 				var position = new Vector3(_startX + i * _spacing, 0f);
 				var obj = Instantiate(_moveGameObject, position, Quaternion.identity);
-				trs.Add(obj.transform);
+				trs[i] = obj.transform;
+			}
+		}
+
+		protected virtual void CreateIntermittentBatchTransformTweens()
+		{
+			trs = new Transform[_capacity];
+			for (var i = 0; i < _capacity; i++)
+			{
+				var position = new Vector3(_startX + i * _spacing, 0f);
+				var obj = Instantiate(_moveGameObject, position, Quaternion.identity);
+				trs[i] = obj.transform;
+			}
+		}
+
+		protected virtual void CreateSingleAndBatchTweens()
+		{
+			trs = new Transform[_rowColumnLength * _rowColumnLength];
+			for (var i = 0; i < _rowColumnLength; i++)
+			{
+				for (var j = 0; j < _rowColumnLength; j++)
+				{
+					var position = new Vector3(_startX + i * _spacing, _startY + j * _spacing);
+					var obj = Instantiate(_moveGameObject, position, Quaternion.identity);
+					var index = i * _rowColumnLength + j;
+					trs[index] = obj.transform;
+				}
 			}
 		}
 
 		protected virtual void CreateMultipleTweensInConcert()
 		{
-			trs = new List<Transform>();
+			var transforms = new List<Transform>();
 			var numberOfLevelsToSpawn = _numberOfLevels * 2;
 			for (var i = 0; i <= numberOfLevelsToSpawn; i++)
 			{
@@ -186,11 +232,13 @@ namespace SampleContent
 					var pos = GetCirclePos(new Vector3(0, y * _ySpacing, 0), currentAngle, radiusLevel);
 					var obj = Instantiate(_moveGameObject, pos, Quaternion.identity);
 					obj.transform.LookAt(Vector3.zero);
-					trs.Add(obj.transform);
+					transforms.Add(obj.transform);
 
 					currentAngle += angle;
 				}
 			}
+
+			trs = transforms.ToArray();
 		}
 
 		private Vector3 GetCirclePos(Vector3 center, float angle, float radius)
@@ -200,6 +248,14 @@ namespace SampleContent
 			pos.y = center.y;
 			pos.z = center.z + radius * Mathf.Cos(angle * Mathf.Deg2Rad);
 			return pos;
+		}
+
+		protected void CompleteTweenTest()
+		{
+			Debug.Log("Completed Tweens!");
+			#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPaused = true;
+			#endif
 		}
 
 		protected Vector3 GetRandomScale()

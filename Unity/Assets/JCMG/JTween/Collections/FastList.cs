@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Profiling;
+using UnityEngine.Assertions;
 
 namespace JCMG.JTween
 {
@@ -24,59 +24,35 @@ namespace JCMG.JTween
 
 		private int _length;
 
+		public FastList() { }
+
 		public FastList(int capacity)
 		{
 			SetCapacity(capacity);
 		}
 
-		public T this[int i] {
-			get { return buffer[i]; }
-			set { buffer[i] = value; }
-		}
-
-		public void Trim()
-		{
-			SetCapacity(_length);
-		}
-
-		public void EnsureCapacity(int capacity)
-		{
-			if (capacity <= 0 || buffer != null && capacity <= buffer.Length)
-			{
-				return;
-			}
-
-			_length = Mathf.Min(_length, capacity);
-			var objArray = new T[capacity];
-			for (var index = 0; index < _length; ++index)
-			{
-				objArray[index] = buffer[index];
-			}
-
-			buffer = objArray;
-		}
-
 		public void SetCapacity(int capacity)
 		{
-			if (capacity > 0)
+			if (buffer == null)
+			{
+				buffer = new T[capacity];
+			}
+			else if (capacity > buffer.Length)
 			{
 				if (buffer != null && capacity == buffer.Length)
 				{
 					return;
 				}
 
-				_length = Mathf.Min(_length, capacity);
 				var objArray = new T[capacity];
-				for (var index = 0; index < _length; ++index)
-				{
-					objArray[index] = buffer[index];
-				}
+				Array.Copy(buffer, 0, objArray, 0, _length);
+				_length = Mathf.Min(_length, capacity);
 
 				buffer = objArray;
 			}
-			else
+			else if(capacity <= 0)
 			{
-				buffer = null;
+				Release();
 			}
 		}
 
@@ -103,6 +79,11 @@ namespace JCMG.JTween
 			return found;
 		}
 
+		public void Trim()
+		{
+			SetCapacity(_length);
+		}
+
 		public void Clear()
 		{
 			_length = 0;
@@ -126,11 +107,8 @@ namespace JCMG.JTween
 
 		public void Remove(T item)
 		{
-			const string PROFILE_REMOVE_NAME = "FastList.Remove";
-			Profiler.BeginSample(PROFILE_REMOVE_NAME);
 			if (buffer == null)
 			{
-				Profiler.EndSample();
 				return;
 			}
 
@@ -146,27 +124,54 @@ namespace JCMG.JTween
 				ResortArray(i);
 				break;
 			}
-			Profiler.EndSample();
 		}
 
 		public void RemoveAt(int index)
 		{
-			const string PROFILE_REMOVE_NAME = "FastList.RemoveAt";
-			Profiler.BeginSample(PROFILE_REMOVE_NAME);
-
 			--_length;
 
 			if (_length != index)
 			{
 				ResortArray(index);
 			}
-			Profiler.EndSample();
 		}
 
 		private void ResortArray(int index)
 		{
 			var newLength = _length - index;
 			Array.Copy(buffer, index + 1, buffer, index, newLength);
+		}
+
+		public void AddRange(T[] array)
+		{
+			if (buffer == null || _length + array.Length > buffer.Length)
+			{
+				SetCapacity(buffer != null ? Mathf.Max(buffer.Length << 1, array.Length) : array.Length);
+			}
+
+			Array.Copy(array, 0, buffer, _length, array.Length);
+			_length += array.Length;
+		}
+
+		public void AddRange(T[] array, int startIndex, int length)
+		{
+			if (buffer == null || _length + length > buffer.Length)
+			{
+				SetCapacity(buffer != null ? Mathf.Max(buffer.Length << 1, length) : length);
+			}
+
+			Array.Copy(array, startIndex, buffer, _length, length);
+			_length += length;
+		}
+
+		public void RemoveRange(int index, int length)
+		{
+			Assert.IsNotNull(buffer);
+			Assert.IsFalse(index + length > buffer.Length);
+
+			var copyLength = _length - length;
+			Array.Copy(buffer, index + length, buffer, index, copyLength);
+			_length -= length;
 		}
 	}
 }

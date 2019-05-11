@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using JCMG.JTween;
 using UnityEngine;
@@ -14,6 +15,9 @@ namespace SampleContent
 		[SerializeField]
 		private LoopType _loopType;
 
+		private Vector3[] _from;
+		private Vector3[] _to;
+
 		protected override void Awake()
 		{
 			base.Awake();
@@ -21,39 +25,71 @@ namespace SampleContent
 			_waitWhileTweensComplete = new WaitForSeconds(_duration * ( _loopCount + 1) + 0.1f);
 		}
 
-		protected override void CreateLargeNumberOfTransformTweens()
+		protected override void CreateLargeNumberOfSingleTransformTweens()
 		{
-			base.CreateLargeNumberOfTransformTweens();
+			base.CreateLargeNumberOfSingleTransformTweens();
 
-			StartCoroutine(TestCapacityOfTweens());
+			StartCoroutine(TestSingleBatchCapacityOfTweens());
 		}
 
-		private IEnumerator TestCapacityOfTweens()
+		protected override void CreateLargeNumberOfBatchTransformTweens()
+		{
+			base.CreateLargeNumberOfBatchTransformTweens();
+
+			StartCoroutine(TestBatchCapacityOfTweens());
+		}
+
+		private IEnumerator TestSingleBatchCapacityOfTweens()
 		{
 			yield return _delayWaitToStartTween;
 
-			for (var i = 0; i < trs.Count; i++)
+			for (var i = 0; i < trs.Length; i++)
 			{
 				JTweenControl.Instance.Move(
 					trs[i],
 					trs[i].position,
-					new Vector3(0, 0) + Vector3.forward * 100f,
+					trs[i].position + Vector3.forward * 100f,
 					_duration,
-					SpaceType.Local,
+					SpaceType.World,
 					_easeType,
 					_loopType,
 					_loopCount);
 			}
 		}
 
-		protected override void CreateIntermittentTransformTweens()
+		private IEnumerator TestBatchCapacityOfTweens()
 		{
-			base.CreateIntermittentTransformTweens();
+			yield return _delayWaitToStartTween;
 
-			StartCoroutine(SpawnTweensIntermittently());
+			_from = new Vector3[trs.Length];
+			_from.PopulatePositionArray(trs, SpaceType.World);
+
+			_to = new Vector3[trs.Length];
+			Array.Copy(_from, _to, _from.Length);
+			for (var i = 0; i < _to.Length; i++)
+			{
+				_to[i] += Vector3.forward * 100f;
+			}
+
+			JTweenControl.Instance.BatchMove(
+				trs,
+				_from,
+				_to,
+				_duration,
+				SpaceType.Local,
+				_easeType,
+				_loopType,
+				_loopCount);
 		}
 
-		private IEnumerator SpawnTweensIntermittently()
+		protected override void CreateIntermittentSingleTransformTweens()
+		{
+			base.CreateIntermittentSingleTransformTweens();
+
+			StartCoroutine(SpawnSingleTweensIntermittently());
+		}
+
+		private IEnumerator SpawnSingleTweensIntermittently()
 		{
 			var queue = new Queue<Transform>(trs);
 			yield return _delayWaitToStartTween;
@@ -82,6 +118,126 @@ namespace SampleContent
 			yield return _waitWhileTweensComplete;
 
 			CompleteTweenTest();
+		}
+
+		protected override void CreateIntermittentBatchTransformTweens()
+		{
+			base.CreateIntermittentBatchTransformTweens();
+
+			StartCoroutine(SpawnBatchTweensIntermittently());
+		}
+
+		private IEnumerator SpawnBatchTweensIntermittently()
+		{
+			_from = new Vector3[trs.Length];
+			_from.PopulatePositionArray(trs, SpaceType.World);
+
+			_to = new Vector3[trs.Length];
+			Array.Copy(_from, _to, _from.Length);
+			for (var i = 0; i < _to.Length; i++)
+			{
+				_to[i] += Vector3.forward * 100f;
+			}
+
+			yield return _delayWaitToStartTween;
+
+			var currentCount = 0;
+			while (currentCount < trs.Length - 1)
+			{
+				var numberOfItemsRemaining = trs.Length - currentCount;
+				var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
+				JTweenControl.Instance.BatchMove(
+					trs,
+					_from,
+					_to,
+					currentCount,
+					randomSpawnAmount,
+					_duration,
+					SpaceType.World,
+					_easeType,
+					_loopType,
+					_loopCount);
+				currentCount += randomSpawnAmount;
+				yield return new WaitForSeconds(_tweenSpawnInterval);
+			}
+
+			yield return _waitWhileTweensComplete;
+
+			CompleteTweenTest();
+		}
+
+		protected override void CreateSingleAndBatchTweens()
+		{
+			base.CreateSingleAndBatchTweens();
+
+			StartCoroutine(SpawnSingleAndBatchTweens());
+		}
+
+		private IEnumerator SpawnSingleAndBatchTweens()
+		{
+			_from = new Vector3[trs.Length];
+			_from.PopulatePositionArray(trs, SpaceType.World);
+
+			_to = new Vector3[trs.Length];
+			Array.Copy(_from, _to, _from.Length);
+			for (var i = 0; i < _to.Length; i++)
+			{
+				_to[i] += Vector3.forward * 100f;
+			}
+
+			yield return _delayWaitToStartTween;
+
+			var doTweenSingles = true;
+			for (var i = 0; i < trs.Length;)
+			{
+				if (doTweenSingles)
+				{
+					var numberOfItemsRemaining = trs.Length - i;
+					var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
+					for (var j = i; j < i + randomSpawnAmount; j++)
+					{
+						var tr = trs[j];
+						JTweenControl.Instance.Move(
+							tr,
+							_from[j],
+							_to[j],
+							_duration,
+							SpaceType.World,
+							_easeType,
+							_loopType,
+							_loopCount);
+					}
+
+					doTweenSingles = false;
+
+					i += randomSpawnAmount;
+
+					yield return null;
+				}
+				else
+				{
+					var numberOfItemsRemaining = trs.Length - i;
+					var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
+
+					JTweenControl.Instance.BatchMove(
+						trs,
+						_from,
+						_to,
+						i,
+						randomSpawnAmount,
+						_duration,
+						SpaceType.World,
+						_easeType,
+						_loopType,
+						_loopCount);
+
+					doTweenSingles = true;
+
+					i += randomSpawnAmount;
+
+					yield return null;
+				}
+			}
 		}
 
 		protected override void CreateMultipleTargetedTweens()
@@ -139,7 +295,7 @@ namespace SampleContent
 		{
 			yield return _delayWaitToStartTween;
 
-			for (var i = 0; i < trs.Count; i++)
+			for (var i = 0; i < trs.Length; i++)
 			{
 				var tr = trs[i];
 				JTweenControl.Instance.Move(
@@ -161,13 +317,15 @@ namespace SampleContent
 					_loopType,
 					_loopCount);
 
-				JTweenControl.Instance.RotateY(
+				JTweenControl.Instance.RotateOnAxis(
 					tr,
 					360,
 					_duration,
+					SpaceType.World,
 					_easeType,
 					_loopType,
-					_loopCount);
+					_loopCount,
+					RotateMode.Y);
 			}
 
 			yield return _waitWhileTweensComplete;
