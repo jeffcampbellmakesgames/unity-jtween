@@ -158,7 +158,7 @@ namespace JCMG.JTween
 			_tweenScaleLifetimes.Add(new TweenLifetime());
 		}
 
-		internal override void UpdateTweens()
+		protected override void UpdateTweens()
 		{
 			Profiler.BeginSample(UPDATE_PROFILE);
 
@@ -169,67 +169,16 @@ namespace JCMG.JTween
 				return;
 			}
 
-			// Create and setup native collections. Copy over existing data
-			_nativeTweenStates = new NativeArray<TweenTransformState>(_tweenStates.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenStateDirectlyToNativeArray(_tweenStates.buffer, _nativeTweenStates, _tweenStates.Length);
+			CreateNativeTransformCollections();
 
-			_nativeTweenPositions = new NativeArray<TweenPosition>(_tweenPositions.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenPositionDirectlyToNativeArray(_tweenPositions.buffer, _nativeTweenPositions, _tweenPositions.Length);
-
-			_nativeTweenRotations = new NativeArray<TweenRotation>(_tweenRotations.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenRotationDirectlyToNativeArray(_tweenRotations.buffer, _nativeTweenRotations, _tweenRotations.Length);
-
-			_nativeTweenScales = new NativeArray<TweenScale>(_tweenScales.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenScaleDirectlyToNativeArray(_tweenScales.buffer, _nativeTweenScales, _tweenScales.Length);
-
-			_nativePositionLifetimes = new NativeArray<TweenLifetime>(_tweenPositionLifetimes.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenPositionLifetimes.buffer, _nativePositionLifetimes, _tweenPositionLifetimes.Length);
-
-			_nativeRotationLifetimes = new NativeArray<TweenLifetime>(_tweenRotationLifetimes.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenRotationLifetimes.buffer, _nativeRotationLifetimes, _tweenRotationLifetimes.Length);
-
-			_nativeScaleLifetimes = new NativeArray<TweenLifetime>(_tweenScaleLifetimes.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenScaleLifetimes.buffer, _nativeScaleLifetimes, _tweenScaleLifetimes.Length);
-
-			_nativePositions = new NativeArray<float3>(_tweenPositions.Length, Allocator.TempJob);
-			_nativeRotations = new NativeArray<quaternion>(_tweenRotations.Length, Allocator.TempJob);
-			_nativeScales = new NativeArray<float3>(_tweenScales.Length, Allocator.TempJob);
-
-			// Create and schedule Jobs
-			_processTweenJob = new ProcessTweenJob
-			{
-				deltaTime = _deltaTime,
-				tweenStates = _nativeTweenStates,
-				tweenPositions = _nativeTweenPositions,
-				tweenRotations = _nativeTweenRotations,
-				tweenScales = _nativeTweenScales,
-				positions = _nativePositions,
-				rotations = _nativeRotations,
-				scales = _nativeScales,
-				tweenPositionLifetimes = _nativePositionLifetimes,
-				tweenRotationLifetimes = _nativeRotationLifetimes,
-				tweenScaleLifetimes = _nativeScaleLifetimes
-			};
-
-			// Break this up into larger batches, the work is fairly inexpensive.
-			_processTweenJobHandle = _processTweenJob.Schedule(_nativeTweenStates.Length, 128);
-
-			_applyTweenToTransformJob = new ApplyTweenToTransformJob
-			{
-				tweenStates = _nativeTweenStates,
-				positions = _nativePositions,
-				rotations = _nativeRotations,
-				scales = _nativeScales
-			};
-
-			applyTweenUpdates = _applyTweenToTransformJob.Schedule(_transformAccessArray, _processTweenJobHandle);
+			SetupJobs();
 
 			_isJobScheduled = true;
 
 			Profiler.EndSample();
 		}
 
-		internal override void LateUpdateTweens()
+		protected override void LateUpdateTweens()
 		{
 			Profiler.BeginSample(LATE_UPDATE_PROFILE);
 
@@ -246,10 +195,7 @@ namespace JCMG.JTween
 			applyTweenUpdates.Complete();
 
 			// Get the data we need back from the native collections or if tween completed remove it.
-			JTweenTools.CopyNativeArrayDirectlyToTweenState(_nativeTweenStates, _tweenStates.buffer);
-			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativePositionLifetimes, _tweenPositionLifetimes.buffer);
-			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativeRotationLifetimes, _tweenRotationLifetimes.buffer);
-			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativeScaleLifetimes, _tweenScaleLifetimes.buffer);
+			CopyNativeCollectionsToManaged();
 
 			for (var i = _nativeTweenStates.Length - 1; i >= 0; i--)
 			{
@@ -274,16 +220,7 @@ namespace JCMG.JTween
 			}
 
 			// Properly dispose of the native collections
-			_nativeTweenStates.Dispose();
-			_nativeTweenPositions.Dispose();
-			_nativeTweenRotations.Dispose();
-			_nativeTweenScales.Dispose();
-			_nativePositionLifetimes.Dispose();
-			_nativeRotationLifetimes.Dispose();
-			_nativeScaleLifetimes.Dispose();
-			_nativePositions.Dispose();
-			_nativeRotations.Dispose();
-			_nativeScales.Dispose();
+			DisposeNativeTransformCollections();
 
 			Profiler.EndSample();
 		}

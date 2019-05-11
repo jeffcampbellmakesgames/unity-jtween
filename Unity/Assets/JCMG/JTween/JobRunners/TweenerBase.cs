@@ -18,10 +18,10 @@ namespace JCMG.JTween
 		protected float _deltaTime;
 		protected bool _isJobScheduled;
 
-		internal abstract void Setup();
-		internal abstract void Teardown();
-		internal abstract void UpdateTweens();
-		internal abstract void LateUpdateTweens();
+		protected abstract void Setup();
+		protected abstract void Teardown();
+		protected abstract void UpdateTweens();
+		protected abstract void LateUpdateTweens();
 
 		protected virtual void Awake()
 		{

@@ -167,13 +167,13 @@ MonoBehaviour:
   _startX: 1
   _startY: 1
   _spacing: 3
-  _duration: 1
-  _loopCount: 1
-  _rowColumnLength: 50
+  _duration: 0.66
+  _loopCount: 5
+  _rowColumnLength: 100
   _capacity: 1000
   _tweenSpawnInterval: 0.5
-  _minSpawn: 25
-  _maxSpawn: 90
+  _minSpawn: 7
+  _maxSpawn: 35
   _ySpacing: 1
   _sphereCurve:
     serializedVersion: 2
@@ -202,7 +202,7 @@ MonoBehaviour:
   _numberOfLevels: 20
   _maxItemsPerLevel: 200
   _radius: 30
-  _mode: 1
+  _mode: 4
   _delay: 2
   _easeType: 27
   _loopType: 2

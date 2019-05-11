@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Jobs;
 using UnityEngine.Profiling;
 
 namespace JCMG.JTween
@@ -20,8 +19,19 @@ namespace JCMG.JTween
 			}
 		}
 
+		// Managed lists of tween data for batching
 		private readonly FastList<TweenBatch> _tweenBatches = new FastList<TweenBatch>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
-		private readonly FastList<TweenLifetime> _tweenBatchLifetime = new FastList<TweenLifetime>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		private readonly FastList<TweenLifetime> _tweenBatchLifetimes = new FastList<TweenLifetime>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+
+		// Native collections for batching.
+		private NativeArray<TweenBatch> _nativeTweenBatches;
+		private NativeArray<TweenLifetime> _nativeTweenBatchLifetimes;
+
+		// Job Handles
+		private JobHandle _processBatchJobHandle;
+
+		// Jobs
+		private ProcessBatchJob _processBatchJob;
 
 		private TweenBatchComparer _batchComparer;
 
@@ -44,7 +54,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = targets.Length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -102,7 +112,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -158,7 +168,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = targets.Length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -216,7 +226,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -272,7 +282,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = targets.Length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -330,7 +340,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -398,7 +408,7 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)targets.Length });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -467,7 +477,7 @@ namespace JCMG.JTween
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
 			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
-			_tweenBatchLifetime.Add(new TweenLifetime
+			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
@@ -507,14 +517,29 @@ namespace JCMG.JTween
 			}
 		}
 
-		internal override void Setup()
+		protected override void Setup()
 		{
 			base.Setup();
 
 			_batchComparer = new TweenBatchComparer();
 		}
 
-		internal override void UpdateTweens()
+		protected override void Teardown()
+		{
+			base.Teardown();
+
+			if (_nativeTweenBatches.IsCreated)
+			{
+				_nativeTweenBatches.Dispose();
+			}
+
+			if (_nativeTweenBatchLifetimes.IsCreated)
+			{
+				_nativeTweenBatchLifetimes.Dispose();
+			}
+		}
+
+		protected override void UpdateTweens()
 		{
 			Profiler.BeginSample(UPDATE_PROFILE);
 			if (_transforms.Length == 0)
@@ -524,81 +549,32 @@ namespace JCMG.JTween
 			}
 
 			// Create and setup native collections. Copy over existing data
-			_nativeTweenStates = new NativeArray<TweenTransformState>(_tweenStates.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenStateDirectlyToNativeArray(_tweenStates.buffer, _nativeTweenStates, _tweenStates.Length);
+			CreateNativeTransformCollections();
 
-			_nativeTweenPositions = new NativeArray<TweenPosition>(_tweenPositions.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenPositionDirectlyToNativeArray(_tweenPositions.buffer, _nativeTweenPositions, _tweenPositions.Length);
+			_nativeTweenBatches = new NativeArray<TweenBatch>(_tweenBatches.Length, Allocator.TempJob);
+			JTweenTools.CopyTweenBatchDirectlyToNativeArray(_tweenBatches.buffer, _nativeTweenBatches, _tweenBatches.Length);
 
-			_nativeTweenRotations = new NativeArray<TweenRotation>(_tweenRotations.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenRotationDirectlyToNativeArray(_tweenRotations.buffer, _nativeTweenRotations, _tweenRotations.Length);
-
-			_nativeTweenScales = new NativeArray<TweenScale>(_tweenScales.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenScaleDirectlyToNativeArray(_tweenScales.buffer, _nativeTweenScales, _tweenScales.Length);
-
-			_nativePositionLifetimes = new NativeArray<TweenLifetime>(_tweenPositionLifetimes.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenPositionLifetimes.buffer, _nativePositionLifetimes, _tweenPositionLifetimes.Length);
-
-			_nativeRotationLifetimes = new NativeArray<TweenLifetime>(_tweenRotationLifetimes.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenRotationLifetimes.buffer, _nativeRotationLifetimes, _tweenRotationLifetimes.Length);
-
-			_nativeScaleLifetimes = new NativeArray<TweenLifetime>(_tweenScaleLifetimes.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenScaleLifetimes.buffer, _nativeScaleLifetimes, _tweenScaleLifetimes.Length);
-
-			_nativePositions = new NativeArray<float3>(_tweenPositions.Length, Allocator.TempJob);
-			_nativeRotations = new NativeArray<quaternion>(_tweenRotations.Length, Allocator.TempJob);
-			_nativeScales = new NativeArray<float3>(_tweenScales.Length, Allocator.TempJob);
-
-			// Update batch progress
-			for (var i = 0; i < _tweenBatchLifetime.Length; i++)
-			{
-				var batchLifetime = _tweenBatchLifetime.buffer[i];
-				batchLifetime.Update(_deltaTime);
-				_tweenBatchLifetime.buffer[i] = batchLifetime;
-
-				if (batchLifetime.GetProgress() >= 1f)
-				{
-					var batch = _tweenBatches.buffer[i];
-					batch.isCompleted = TRUE;
-					_tweenBatches.buffer[i] = batch;
-				}
-			}
+			_nativeTweenBatchLifetimes = new NativeArray<TweenLifetime>(_tweenBatchLifetimes.Length, Allocator.TempJob);
+			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenBatchLifetimes.buffer, _nativeTweenBatchLifetimes, _tweenBatchLifetimes.Length);
 
 			// Schedule Jobs
-			_processTweenJob = new ProcessTweenJob
+			_processBatchJob = new ProcessBatchJob
 			{
 				deltaTime = _deltaTime,
-				tweenStates = _nativeTweenStates,
-				tweenPositions = _nativeTweenPositions,
-				tweenRotations = _nativeTweenRotations,
-				tweenScales = _nativeTweenScales,
-				positions = _nativePositions,
-				rotations = _nativeRotations,
-				scales = _nativeScales,
-				tweenPositionLifetimes = _nativePositionLifetimes,
-				tweenRotationLifetimes = _nativeRotationLifetimes,
-				tweenScaleLifetimes = _nativeScaleLifetimes
+				batchLifetimes = _nativeTweenBatchLifetimes,
+				tweenBatches = _nativeTweenBatches
 			};
 
-			_processTweenJobHandle = _processTweenJob.Schedule(_nativeTweenStates.Length, 128);
+			_processBatchJobHandle = _processBatchJob.Schedule(_tweenBatches.Length, 1);
 
-			_applyTweenToTransformJob = new ApplyTweenToTransformJob
-			{
-				tweenStates = _nativeTweenStates,
-				positions = _nativePositions,
-				rotations = _nativeRotations,
-				scales = _nativeScales
-			};
-
-			applyTweenUpdates =
-				_applyTweenToTransformJob.Schedule(_transformAccessArray, _processTweenJobHandle);
+			SetupJobs();
 
 			_isJobScheduled = true;
 
 			Profiler.EndSample();
 		}
 
-		internal override void LateUpdateTweens()
+		protected override void LateUpdateTweens()
 		{
 			Profiler.BeginSample(LATE_UPDATE_PROFILE);
 			if (!_isJobScheduled)
@@ -609,14 +585,17 @@ namespace JCMG.JTween
 
 			_isJobScheduled = false;
 
-			// Complete the job and any dependencies
+			// Complete the batch process job
+			_processBatchJobHandle.Complete();
+
+			JTweenTools.CopyNativeArrayDirectlyToTweenBatch(_nativeTweenBatches, _tweenBatches.buffer);
+			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativeTweenBatchLifetimes, _tweenBatchLifetimes.buffer);
+
+			// Complete the tween job and any dependencies
 			applyTweenUpdates.Complete();
 
 			// Get the data we need back from the native collections or if tween completed remove it.
-			JTweenTools.CopyNativeArrayDirectlyToTweenState(_nativeTweenStates, _tweenStates.buffer);
-			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativePositionLifetimes, _tweenPositionLifetimes.buffer);
-			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativeRotationLifetimes, _tweenRotationLifetimes.buffer);
-			JTweenTools.CopyNativeArrayDirectlyToTweenLifetime(_nativeScaleLifetimes, _tweenScaleLifetimes.buffer);
+			CopyNativeCollectionsToManaged();
 
 			// Sort batches from earliest index to latest, check for any completed batches,
 			// and then remove en masse tweens where their batch is complete.
@@ -649,7 +628,8 @@ namespace JCMG.JTween
 					_tweenRotationLifetimes.RemoveRange(index, length);
 					_tweenScaleLifetimes.RemoveRange(index, length);
 
-					//
+					// Shuffle all batches ahead of the current one back one index and update all of their
+					// start indexes to account for the removed batch.
 					for (var j = i + 1; j < _tweenBatches.Length; j++)
 					{
 						var laterTweenBatch = _tweenBatches.buffer[j];
@@ -658,23 +638,17 @@ namespace JCMG.JTween
 					}
 
 					_tweenBatches.RemoveAt(i);
-					_tweenBatchLifetime.RemoveAt(i);
+					_tweenBatchLifetimes.RemoveAt(i);
 
 					Profiler.EndSample();
 				}
 			}
 
 			// Properly dispose of the native collections
-			_nativeTweenStates.Dispose();
-			_nativeTweenPositions.Dispose();
-			_nativeTweenRotations.Dispose();
-			_nativeTweenScales.Dispose();
-			_nativePositionLifetimes.Dispose();
-			_nativeRotationLifetimes.Dispose();
-			_nativeScaleLifetimes.Dispose();
-			_nativePositions.Dispose();
-			_nativeRotations.Dispose();
-			_nativeScales.Dispose();
+			DisposeNativeTransformCollections();
+
+			_nativeTweenBatches.Dispose();
+			_nativeTweenBatchLifetimes.Dispose();
 
 			Profiler.EndSample();
 		}
