@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 651588449}
   - component: {fileID: 651588450}
   m_Layer: 0
-  m_Name: TweenECSTester
+  m_Name: TweenTester
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,13 +167,13 @@ MonoBehaviour:
   _startX: 1
   _startY: 1
   _spacing: 3
-  _duration: 2
-  _loopCount: -1
+  _duration: 0.66
+  _loopCount: 5
   _rowColumnLength: 100
-  _capacity: 1
+  _capacity: 1000
   _tweenSpawnInterval: 0.5
-  _minSpawn: 25
-  _maxSpawn: 100
+  _minSpawn: 7
+  _maxSpawn: 35
   _ySpacing: 1
   _sphereCurve:
     serializedVersion: 2
@@ -202,7 +202,7 @@ MonoBehaviour:
   _numberOfLevels: 20
   _maxItemsPerLevel: 200
   _radius: 30
-  _mode: 0
+  _mode: 4
   _delay: 2
   _easeType: 27
   _loopType: 2
@@ -518,3 +518,72 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2115402866
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2115402868}
+  - component: {fileID: 2115402870}
+  - component: {fileID: 2115402869}
+  - component: {fileID: 2115402867}
+  m_Layer: 0
+  m_Name: JTweenControl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2115402867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115402866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe105f45de6f4e3a884fd892c947902b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2115402868
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115402866}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 0, z: 90.81494}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2115402869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115402866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3b0d2584a149cc8389d4081d135eb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2115402870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115402866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae4ddd2c5e1b45d4889e80787e4aafad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
