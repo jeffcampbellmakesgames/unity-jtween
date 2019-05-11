@@ -29,9 +29,9 @@ namespace JCMG.JTween
 				moveSpaceType = spaceType
 			});
 
-			_tweenPositions.Add(new TweenPosition { from = from, to = to });
+			_tweenPositions.Add(new TweenFloat3 { from = from, to = to });
 			_tweenRotations.Add(new TweenRotation());
-			_tweenScales.Add(new TweenScale());
+			_tweenScales.Add(new TweenFloat3());
 
 			_tweenPositionLifetimes.Add(new TweenLifetime
 			{
@@ -58,9 +58,9 @@ namespace JCMG.JTween
 
 			_tweenStates.Add(new TweenTransformState { isPlaying = TRUE, isScalingEnabled = TRUE });
 
-			_tweenPositions.Add(new TweenPosition());
+			_tweenPositions.Add(new TweenFloat3());
 			_tweenRotations.Add(new TweenRotation());
-			_tweenScales.Add(new TweenScale { from = from, to = to });
+			_tweenScales.Add(new TweenFloat3 { from = from, to = to });
 
 			_tweenPositionLifetimes.Add(new TweenLifetime());
 			_tweenRotationLifetimes.Add(new TweenLifetime());
@@ -93,14 +93,14 @@ namespace JCMG.JTween
 				rotateSpaceType = spaceType
 			});
 
-			_tweenPositions.Add(new TweenPosition());
+			_tweenPositions.Add(new TweenFloat3());
 			_tweenRotations.Add(new TweenRotation
 			{
 				from = from,
 				to = to,
 				rotateMode = RotateMode.XYZ
 			});
-			_tweenScales.Add(new TweenScale());
+			_tweenScales.Add(new TweenFloat3());
 
 			_tweenPositionLifetimes.Add(new TweenLifetime());
 			_tweenRotationLifetimes.Add(new TweenLifetime
@@ -133,7 +133,7 @@ namespace JCMG.JTween
 				rotateSpaceType = spaceType
 			});
 
-			_tweenPositions.Add(new TweenPosition());
+			_tweenPositions.Add(new TweenFloat3());
 
 			var eulerAngles = spaceType == SpaceType.World
 				? target.eulerAngles
@@ -145,7 +145,7 @@ namespace JCMG.JTween
 				angle = angle,
 				rotateMode = rotateMode
 			});
-			_tweenScales.Add(new TweenScale());
+			_tweenScales.Add(new TweenFloat3());
 
 			_tweenPositionLifetimes.Add(new TweenLifetime());
 			_tweenRotationLifetimes.Add(new TweenLifetime

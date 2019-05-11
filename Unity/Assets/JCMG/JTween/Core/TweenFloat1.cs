@@ -3,12 +3,12 @@ using Unity.Mathematics;
 
 namespace JCMG.JTween
 {
-	internal struct TweenPosition
+	internal struct TweenFloat1
 	{
-		public float3 from;
-		public float3 to;
+		public float from;
+		public float to;
 
-		public float3 GetPosition(float ease, bool isReversed)
+		public float Lerp(float ease, bool isReversed)
 		{
 			var currentTo = isReversed ? from : to;
 			var currentFrom = isReversed ? to : from;
@@ -17,7 +17,7 @@ namespace JCMG.JTween
 
 		public static long SizeOf()
 		{
-			return UnsafeUtility.SizeOf<TweenPosition>();
+			return UnsafeUtility.SizeOf<TweenFloat1>();
 		}
 	}
 }

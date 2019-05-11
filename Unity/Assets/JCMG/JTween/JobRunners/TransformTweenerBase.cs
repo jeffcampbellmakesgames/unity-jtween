@@ -11,9 +11,9 @@ namespace JCMG.JTween
 		// Managed lists of tween data
 		protected readonly FastList<Transform> _transforms = new FastList<Transform>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 		protected readonly FastList<TweenTransformState> _tweenStates = new FastList<TweenTransformState>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
-		protected readonly FastList<TweenPosition> _tweenPositions = new FastList<TweenPosition>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		protected readonly FastList<TweenFloat3> _tweenPositions = new FastList<TweenFloat3>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 		protected readonly FastList<TweenRotation> _tweenRotations = new FastList<TweenRotation>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
-		protected readonly FastList<TweenScale> _tweenScales = new FastList<TweenScale>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		protected readonly FastList<TweenFloat3> _tweenScales = new FastList<TweenFloat3>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 		protected readonly FastList<TweenLifetime> _tweenPositionLifetimes = new FastList<TweenLifetime>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 		protected readonly FastList<TweenLifetime> _tweenRotationLifetimes = new FastList<TweenLifetime>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 		protected readonly FastList<TweenLifetime> _tweenScaleLifetimes = new FastList<TweenLifetime>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
@@ -21,9 +21,9 @@ namespace JCMG.JTween
 		// Native collections of transforms and tween data
 		protected TransformAccessArray _transformAccessArray;
 		protected NativeArray<TweenTransformState> _nativeTweenStates;
-		protected NativeArray<TweenPosition> _nativeTweenPositions;
+		protected NativeArray<TweenFloat3> _nativeTweenPositions;
 		protected NativeArray<TweenRotation> _nativeTweenRotations;
-		protected NativeArray<TweenScale> _nativeTweenScales;
+		protected NativeArray<TweenFloat3> _nativeTweenScales;
 		protected NativeArray<TweenLifetime> _nativePositionLifetimes;
 		protected NativeArray<TweenLifetime> _nativeRotationLifetimes;
 		protected NativeArray<TweenLifetime> _nativeScaleLifetimes;
@@ -108,14 +108,14 @@ namespace JCMG.JTween
 			_nativeTweenStates = new NativeArray<TweenTransformState>(_tweenStates.Length, Allocator.TempJob);
 			JTweenTools.CopyTweenStateDirectlyToNativeArray(_tweenStates.buffer, _nativeTweenStates, _tweenStates.Length);
 
-			_nativeTweenPositions = new NativeArray<TweenPosition>(_tweenPositions.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenPositionDirectlyToNativeArray(_tweenPositions.buffer, _nativeTweenPositions, _tweenPositions.Length);
+			_nativeTweenPositions = new NativeArray<TweenFloat3>(_tweenPositions.Length, Allocator.TempJob);
+			JTweenTools.CopyTween3DirectlyToNativeArray(_tweenPositions.buffer, _nativeTweenPositions, _tweenPositions.Length);
 
 			_nativeTweenRotations = new NativeArray<TweenRotation>(_tweenRotations.Length, Allocator.TempJob);
 			JTweenTools.CopyTweenRotationDirectlyToNativeArray(_tweenRotations.buffer, _nativeTweenRotations, _tweenRotations.Length);
 
-			_nativeTweenScales = new NativeArray<TweenScale>(_tweenScales.Length, Allocator.TempJob);
-			JTweenTools.CopyTweenScaleDirectlyToNativeArray(_tweenScales.buffer, _nativeTweenScales, _tweenScales.Length);
+			_nativeTweenScales = new NativeArray<TweenFloat3>(_tweenScales.Length, Allocator.TempJob);
+			JTweenTools.CopyTween3DirectlyToNativeArray(_tweenScales.buffer, _nativeTweenScales, _tweenScales.Length);
 
 			_nativePositionLifetimes = new NativeArray<TweenLifetime>(_tweenPositionLifetimes.Length, Allocator.TempJob);
 			JTweenTools.CopyTweenLifetimeDirectlyToNativeArray(_tweenPositionLifetimes.buffer, _nativePositionLifetimes, _tweenPositionLifetimes.Length);
