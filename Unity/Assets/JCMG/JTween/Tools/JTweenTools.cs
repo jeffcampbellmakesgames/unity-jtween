@@ -73,14 +73,14 @@ namespace JCMG.JTween
 			}
 		}
 
-		public static unsafe void CopyTweenPositionDirectlyToNativeArray(TweenPosition[] sourceArray, NativeArray<TweenPosition> destinationArray, int length)
+		public static unsafe void CopyTween3DirectlyToNativeArray(TweenFloat3[] sourceArray, NativeArray<TweenFloat3> destinationArray, int length)
 		{
 			fixed (void* arrayPointer = sourceArray)
 			{
 				UnsafeUtility.MemCpy(
 					NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(destinationArray),
 					arrayPointer,
-					length * TweenPosition.SizeOf());
+					length * TweenFloat3.SizeOf());
 			}
 		}
 
@@ -92,17 +92,6 @@ namespace JCMG.JTween
 					NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(destinationArray),
 					arrayPointer,
 					length * TweenRotation.SizeOf());
-			}
-		}
-
-		public static unsafe void CopyTweenScaleDirectlyToNativeArray(TweenScale[] sourceArray, NativeArray<TweenScale> destinationArray, int length)
-		{
-			fixed (void* arrayPointer = sourceArray)
-			{
-				UnsafeUtility.MemCpy(
-					NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(destinationArray),
-					arrayPointer,
-					length * TweenScale.SizeOf());
 			}
 		}
 

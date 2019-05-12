@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Profiling;
@@ -64,7 +63,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -73,9 +72,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition { from = fromArray[i], to = toArray[i] });
+				_tweenPositions.Add(new TweenFloat3 { from = fromArray[i], to = toArray[i] });
 				_tweenRotations.Add(new TweenRotation());
-				_tweenScales.Add(new TweenScale());
+				_tweenScales.Add(new TweenFloat3());
 
 				_tweenPositionLifetimes.Add(new TweenLifetime
 				{
@@ -133,9 +132,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition { from = fromArray[normalizedIndex], to = toArray[normalizedIndex] });
+				_tweenPositions.Add(new TweenFloat3 { from = fromArray[normalizedIndex], to = toArray[normalizedIndex] });
 				_tweenRotations.Add(new TweenRotation());
-				_tweenScales.Add(new TweenScale());
+				_tweenScales.Add(new TweenFloat3());
 
 				_tweenPositionLifetimes.Add(new TweenLifetime
 				{
@@ -178,7 +177,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -187,9 +186,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition());
+				_tweenPositions.Add(new TweenFloat3());
 				_tweenRotations.Add(new TweenRotation());
-				_tweenScales.Add(new TweenScale { from = fromArray[i], to = toArray[i] });
+				_tweenScales.Add(new TweenFloat3 { from = fromArray[i], to = toArray[i] });
 
 				_tweenPositionLifetimes.Add(new TweenLifetime());
 				_tweenRotationLifetimes.Add(new TweenLifetime());
@@ -247,9 +246,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition());
+				_tweenPositions.Add(new TweenFloat3());
 				_tweenRotations.Add(new TweenRotation());
-				_tweenScales.Add(new TweenScale { from = fromArray[normalizedIndex], to = toArray[normalizedIndex] });
+				_tweenScales.Add(new TweenFloat3 { from = fromArray[normalizedIndex], to = toArray[normalizedIndex] });
 
 				_tweenPositionLifetimes.Add(new TweenLifetime());
 				_tweenRotationLifetimes.Add(new TweenLifetime());
@@ -292,7 +291,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -301,9 +300,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition());
+				_tweenPositions.Add(new TweenFloat3());
 				_tweenRotations.Add(new TweenRotation { from = fromArray[i], to = toArray[i] });
-				_tweenScales.Add(new TweenScale());
+				_tweenScales.Add(new TweenFloat3());
 
 				_tweenPositionLifetimes.Add(new TweenLifetime());
 				_tweenRotationLifetimes.Add(new TweenLifetime
@@ -361,9 +360,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition());
+				_tweenPositions.Add(new TweenFloat3());
 				_tweenRotations.Add(new TweenRotation { from = fromArray[normalizedIndex], to = toArray[normalizedIndex] });
-				_tweenScales.Add(new TweenScale());
+				_tweenScales.Add(new TweenFloat3());
 
 				_tweenPositionLifetimes.Add(new TweenLifetime());
 				_tweenRotationLifetimes.Add(new TweenLifetime
@@ -418,7 +417,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < targets.Length; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -429,9 +428,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition { from = fromPosArray[i], to = toPosArray[i] });
+				_tweenPositions.Add(new TweenFloat3 { from = fromPosArray[i], to = toPosArray[i] });
 				_tweenRotations.Add(new TweenRotation { from = fromRotArray[i], to = toRotArray[i] });
-				_tweenScales.Add(new TweenScale { from = fromScaleArray[i], to = toScaleArray[i] });
+				_tweenScales.Add(new TweenFloat3 { from = fromScaleArray[i], to = toScaleArray[i] });
 
 				var lifetime = new TweenLifetime
 				{
@@ -500,9 +499,9 @@ namespace JCMG.JTween
 					moveSpaceType = spaceType
 				});
 
-				_tweenPositions.Add(new TweenPosition { from = fromPosArray[normalizedIndex], to = toPosArray[normalizedIndex] });
+				_tweenPositions.Add(new TweenFloat3 { from = fromPosArray[normalizedIndex], to = toPosArray[normalizedIndex] });
 				_tweenRotations.Add(new TweenRotation { from = fromRotArray[normalizedIndex], to = toRotArray[normalizedIndex] });
-				_tweenScales.Add(new TweenScale { from = fromScaleArray[normalizedIndex], to = toScaleArray[normalizedIndex] });
+				_tweenScales.Add(new TweenFloat3 { from = fromScaleArray[normalizedIndex], to = toScaleArray[normalizedIndex] });
 
 				var lifetime = new TweenLifetime
 				{

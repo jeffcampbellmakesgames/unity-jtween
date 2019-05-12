@@ -9,13 +9,13 @@ namespace JCMG.JTween
 	internal struct ProcessTweenJob : IJobParallelFor
 	{
 		[ReadOnly]
-		public NativeArray<TweenPosition> tweenPositions;
+		public NativeArray<TweenFloat3> tweenPositions;
 
 		[ReadOnly]
 		public NativeArray<TweenRotation> tweenRotations;
 
 		[ReadOnly]
-		public NativeArray<TweenScale> tweenScales;
+		public NativeArray<TweenFloat3> tweenScales;
 
 		[WriteOnly]
 		public NativeArray<float3> positions;
@@ -55,7 +55,7 @@ namespace JCMG.JTween
 				tweenPositionLifetimes[i] = tweenLifetime;
 
 				var progress = tweenLifetime.GetProgress();
-				positions[i] = tweenPositions[i].GetPosition(tweenLifetime.GetEase(), tweenLifetime.isReversed == TRUE);
+				positions[i] = tweenPositions[i].Lerp(tweenLifetime.GetEase(), tweenLifetime.isReversed == TRUE);
 				tweenIsPlaying = progress < 1f;
 			}
 
@@ -77,7 +77,7 @@ namespace JCMG.JTween
 				tweenScaleLifetimes[i] = tweenLifetime;
 
 				var progress = tweenLifetime.GetProgress();
-				scales[i] = tweenScales[i].GetScale(tweenLifetime.GetEase(), tweenLifetime.isReversed == TRUE);
+				scales[i] = tweenScales[i].Lerp(tweenLifetime.GetEase(), tweenLifetime.isReversed == TRUE);
 				tweenIsPlaying = progress < 1f;
 			}
 

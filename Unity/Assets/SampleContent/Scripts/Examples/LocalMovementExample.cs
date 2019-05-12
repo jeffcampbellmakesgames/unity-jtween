@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SampleContent
 {
-	public class LocalMovementExample : MonoBehaviour
+	internal class LocalMovementExample : MonoBehaviour
 	{
 		[SerializeField]
 		private Vector3 _destination;

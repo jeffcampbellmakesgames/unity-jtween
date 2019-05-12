@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SampleContent
 {
-	public class WorldMovementExample : MonoBehaviour
+	internal class WorldMovementExample : MonoBehaviour
 	{
 		[SerializeField]
 		private Vector3 _destination;
