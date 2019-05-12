@@ -63,7 +63,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -177,7 +177,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -291,7 +291,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
@@ -417,7 +417,7 @@ namespace JCMG.JTween
 			_transforms.AddRange(targets);
 			for (var i = 0; i < targets.Length; i++)
 			{
-				_transformAccessArray.Add(_transforms.buffer[i]);
+				_transformAccessArray.Add(_transforms.buffer[batchIndex + i]);
 
 				_tweenStates.Add(new TweenTransformState
 				{
