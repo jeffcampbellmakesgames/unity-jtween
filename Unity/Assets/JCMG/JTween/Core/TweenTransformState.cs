@@ -6,12 +6,21 @@ namespace JCMG.JTween
 	{
 		public byte isPlaying;
 		public TweenTransformType transformType;
-		public SpaceType moveSpaceType;
-		public SpaceType rotateSpaceType;
+		public TweenSpaceType spaceType;
 
 		public static long SizeOf()
 		{
 			return UnsafeUtility.SizeOf<TweenTransformState>();
+		}
+
+		public bool IsMovementInWorldSpace()
+		{
+			return (spaceType & TweenSpaceType.WorldMovement) == TweenSpaceType.WorldMovement;
+		}
+
+		public bool IsRotationInWorldSpace()
+		{
+			return (spaceType & TweenSpaceType.WorldRotation) == TweenSpaceType.WorldRotation;
 		}
 
 		public bool IsMovementEnabled()

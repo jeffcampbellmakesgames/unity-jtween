@@ -65,7 +65,6 @@ namespace JCMG.JTween
 				fromArray,
 				toArray,
 				duration,
-				spaceType,
 				easeType,
 				loopType,
 				loopCount);
@@ -90,7 +89,6 @@ namespace JCMG.JTween
 				startIndex,
 				length,
 				duration,
-				spaceType,
 				easeType,
 				loopType,
 				loopCount);

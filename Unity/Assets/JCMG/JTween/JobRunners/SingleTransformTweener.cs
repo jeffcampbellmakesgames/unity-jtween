@@ -26,7 +26,9 @@ namespace JCMG.JTween
 			{
 				isPlaying = TRUE,
 				transformType = TweenTransformType.Movement,
-				moveSpaceType = spaceType
+				spaceType = spaceType == SpaceType.World
+					? TweenSpaceType.WorldMovement
+					: TweenSpaceType.LocalMovement
 			});
 
 			_tweenPositions.Add(new TweenFloat3 { from = from, to = to });
@@ -94,7 +96,9 @@ namespace JCMG.JTween
 			{
 				isPlaying = TRUE,
 				transformType = TweenTransformType.Rotation,
-				rotateSpaceType = spaceType
+				spaceType = spaceType == SpaceType.World
+					? TweenSpaceType.WorldRotation
+					: TweenSpaceType.LocalRotation
 			});
 
 			_tweenPositions.Add(new TweenFloat3());
@@ -134,7 +138,9 @@ namespace JCMG.JTween
 			{
 				isPlaying = TRUE,
 				transformType = TweenTransformType.Rotation,
-				rotateSpaceType = spaceType
+				spaceType = spaceType == SpaceType.World
+					? TweenSpaceType.WorldRotation
+					: TweenSpaceType.LocalRotation
 			});
 
 			_tweenPositions.Add(new TweenFloat3());

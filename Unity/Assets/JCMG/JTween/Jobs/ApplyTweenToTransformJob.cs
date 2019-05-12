@@ -28,7 +28,7 @@ namespace JCMG.JTween
 			var tweenState = tweenStates[i];
 			if (tweenState.IsMovementEnabled())
 			{
-				if (tweenState.moveSpaceType == SpaceType.World)
+				if (tweenState.IsMovementInWorldSpace())
 				{
 					transform.position = positions[i];
 				}
@@ -40,7 +40,7 @@ namespace JCMG.JTween
 
 			if (tweenState.IsRotationEnabled())
 			{
-				if (tweenState.rotateSpaceType == SpaceType.World)
+				if (tweenState.IsRotationInWorldSpace())
 				{
 					transform.rotation = rotations[i];
 				}
