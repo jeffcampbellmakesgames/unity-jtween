@@ -26,9 +26,9 @@ namespace JCMG.JTween
 		public void Execute(int i, TransformAccess transform)
 		{
 			var tweenState = tweenStates[i];
-			if (tweenState.isMovementEnabled == TRUE)
+			if (tweenState.IsMovementEnabled())
 			{
-				if (tweenState.moveSpaceType == SpaceType.World)
+				if (tweenState.IsMovementInWorldSpace())
 				{
 					transform.position = positions[i];
 				}
@@ -38,9 +38,9 @@ namespace JCMG.JTween
 				}
 			}
 
-			if (tweenState.isRotationEnabled == TRUE)
+			if (tweenState.IsRotationEnabled())
 			{
-				if (tweenState.rotateSpaceType == SpaceType.World)
+				if (tweenState.IsRotationInWorldSpace())
 				{
 					transform.rotation = rotations[i];
 				}
@@ -50,7 +50,7 @@ namespace JCMG.JTween
 				}
 			}
 
-			if (tweenState.isScalingEnabled == TRUE)
+			if (tweenState.IsScalingEnabled())
 			{
 				transform.localScale = scales[i];
 			}

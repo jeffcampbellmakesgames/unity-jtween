@@ -9,10 +9,9 @@ namespace JCMG.JTween
 	{
 		public quaternion from;
 		public quaternion to;
-		public RotateMode rotateMode;
 		public float angle;
 
-		public quaternion GetRotation(float ease, bool isReversed)
+		public quaternion GetRotation(float ease, bool isReversed, RotateMode rotateMode)
 		{
 			switch (rotateMode)
 			{

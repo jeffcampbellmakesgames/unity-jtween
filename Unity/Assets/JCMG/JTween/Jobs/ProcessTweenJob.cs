@@ -48,7 +48,7 @@ namespace JCMG.JTween
 			}
 
 			var tweenIsPlaying = false;
-			if (tweenState.isMovementEnabled == TRUE)
+			if (tweenState.IsMovementEnabled())
 			{
 				var tweenLifetime = tweenPositionLifetimes[i];
 				tweenLifetime.Update(deltaTime);
@@ -59,18 +59,21 @@ namespace JCMG.JTween
 				tweenIsPlaying = progress < 1f;
 			}
 
-			if (tweenState.isRotationEnabled == TRUE)
+			if (tweenState.IsRotationEnabled())
 			{
 				var tweenLifetime = tweenRotationLifetimes[i];
 				tweenLifetime.Update(deltaTime);
 				tweenRotationLifetimes[i] = tweenLifetime;
 
 				var progress = tweenLifetime.GetProgress();
-				rotations[i] = tweenRotations[i].GetRotation(tweenLifetime.GetEase(), tweenLifetime.isReversed == TRUE);
+				rotations[i] = tweenRotations[i].GetRotation(
+					tweenLifetime.GetEase(),
+					tweenLifetime.isReversed == TRUE,
+					tweenState.GetRotateMode());
 				tweenIsPlaying = progress < 1f;
 			}
 
-			if (tweenState.isScalingEnabled == TRUE)
+			if (tweenState.IsScalingEnabled())
 			{
 				var tweenLifetime = tweenScaleLifetimes[i];
 				tweenLifetime.Update(deltaTime);

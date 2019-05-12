@@ -68,8 +68,10 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Movement,
+					spaceType = spaceType == SpaceType.World
+						? TweenSpaceType.WorldMovement
+						: TweenSpaceType.LocalMovement
 				});
 
 				_tweenPositions.Add(new TweenFloat3 { from = fromArray[i], to = toArray[i] });
@@ -128,8 +130,10 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Movement,
+					spaceType = spaceType == SpaceType.World
+						? TweenSpaceType.WorldMovement
+						: TweenSpaceType.LocalMovement
 				});
 
 				_tweenPositions.Add(new TweenFloat3 { from = fromArray[normalizedIndex], to = toArray[normalizedIndex] });
@@ -153,7 +157,6 @@ namespace JCMG.JTween
 			Vector3[] fromArray,
 			Vector3[] toArray,
 			float duration,
-			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
 			int loopCount = 0)
@@ -182,8 +185,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Scaling
 				});
 
 				_tweenPositions.Add(new TweenFloat3());
@@ -209,7 +211,6 @@ namespace JCMG.JTween
 			int startIndex,
 			int length,
 			float duration,
-			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
 			int loopCount = 0)
@@ -242,8 +243,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Scaling
 				});
 
 				_tweenPositions.Add(new TweenFloat3());
@@ -296,8 +296,10 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Rotation,
+					spaceType = spaceType == SpaceType.World
+						? TweenSpaceType.WorldRotation
+						: TweenSpaceType.LocalRotation
 				});
 
 				_tweenPositions.Add(new TweenFloat3());
@@ -356,8 +358,10 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Rotation,
+					spaceType = spaceType == SpaceType.World
+						? TweenSpaceType.WorldRotation
+						: TweenSpaceType.LocalRotation
 				});
 
 				_tweenPositions.Add(new TweenFloat3());
@@ -422,10 +426,12 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
-					isRotationEnabled = TRUE,
-					isScalingEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Movement |
+									TweenTransformType.Rotation |
+									TweenTransformType.Scaling,
+					spaceType = spaceType == SpaceType.World
+						? TweenSpaceType.WorldMovement | TweenSpaceType.WorldRotation
+						: TweenSpaceType.LocalMovement | TweenSpaceType.LocalRotation
 				});
 
 				_tweenPositions.Add(new TweenFloat3 { from = fromPosArray[i], to = toPosArray[i] });
@@ -493,10 +499,12 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
-					isRotationEnabled = TRUE,
-					isScalingEnabled = TRUE,
-					moveSpaceType = spaceType
+					transformType = TweenTransformType.Movement |
+					                TweenTransformType.Rotation |
+					                TweenTransformType.Scaling,
+					spaceType = spaceType == SpaceType.World
+						? TweenSpaceType.WorldMovement | TweenSpaceType.WorldRotation
+						: TweenSpaceType.LocalMovement | TweenSpaceType.LocalRotation
 				});
 
 				_tweenPositions.Add(new TweenFloat3 { from = fromPosArray[normalizedIndex], to = toPosArray[normalizedIndex] });
