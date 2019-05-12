@@ -105,6 +105,22 @@ namespace JCMG.JTween
 			buffer[_length++] = item;
 		}
 
+		public T PopLast()
+		{
+			T result;
+			if (_length == 0)
+			{
+				result = default(T);
+			}
+			else
+			{
+				result = buffer[_length - 1];
+				_length--;
+			}
+
+			return result;
+		}
+
 		public void Remove(T item)
 		{
 			if (buffer == null)
