@@ -4,13 +4,23 @@ namespace JCMG.JTween
 {
 	internal struct TweenTransformState
 	{
-		public byte isPlaying;
+		public TweenStateType state;
 		public TweenTransformType transformType;
 		public TweenSpaceType spaceType;
 
-		public static long SizeOf()
+		public bool IsPlaying()
 		{
-			return UnsafeUtility.SizeOf<TweenTransformState>();
+			return (state & TweenStateType.IsPlaying) == TweenStateType.IsPlaying;
+		}
+
+		public bool IsPaused()
+		{
+			return (state & TweenStateType.IsPaused) == TweenStateType.IsPaused;
+		}
+
+		public bool IsCompleted()
+		{
+			return (state & TweenStateType.IsCompleted) == TweenStateType.IsCompleted;
 		}
 
 		public bool IsMovementInWorldSpace()
@@ -75,6 +85,11 @@ namespace JCMG.JTween
 			}
 
 			return rotateMode;
+		}
+
+		public static long SizeOf()
+		{
+			return UnsafeUtility.SizeOf<TweenTransformState>();
 		}
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -10,14 +9,6 @@ namespace JCMG.JTween
 {
 	internal sealed class BatchTransformTweener : TransformTweenerBase
 	{
-		private class TweenBatchComparer : IComparer<TweenBatch>
-		{
-			public int Compare(TweenBatch x, TweenBatch y)
-			{
-				return x.startIndex.CompareTo(y.startIndex);
-			}
-		}
-
 		// Managed lists of tween data for batching
 		private readonly FastList<TweenBatch> _tweenBatches = new FastList<TweenBatch>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 		private readonly FastList<TweenLifetime> _tweenBatchLifetimes = new FastList<TweenLifetime>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
@@ -32,8 +23,6 @@ namespace JCMG.JTween
 		// Jobs
 		private ProcessBatchJob _processBatchJob;
 
-		private TweenBatchComparer _batchComparer;
-
 		public void BatchMove(
 				Transform[] targets,
 				Vector3[] fromArray,
@@ -42,7 +31,9 @@ namespace JCMG.JTween
 				SpaceType spaceType = SpaceType.World,
 				EaseType easeType = EaseType.Linear,
 				LoopType loopType = LoopType.None,
-				int loopCount = 0)
+				int loopCount = 0,
+				Action onStart = null,
+				Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and equal length
 			Assert.IsNotNull(targets);
@@ -52,7 +43,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = targets.Length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -60,6 +56,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -67,7 +64,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Movement,
 					spaceType = spaceType == SpaceType.World
 						? TweenSpaceType.WorldMovement
@@ -100,7 +97,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and have sufficient capacity for the intended slice.
 			Assert.IsNotNull(targets);
@@ -112,7 +111,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -120,6 +124,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets, startIndex, length);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -129,7 +134,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Movement,
 					spaceType = spaceType == SpaceType.World
 						? TweenSpaceType.WorldMovement
@@ -159,7 +164,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and equal length
 			Assert.IsNotNull(targets);
@@ -169,7 +176,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = targets.Length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -177,6 +189,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -184,7 +197,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Scaling
 				});
 
@@ -213,7 +226,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and have sufficient capacity for the intended slice.
 			Assert.IsNotNull(targets);
@@ -225,7 +240,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -233,6 +253,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets, startIndex, length);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -242,7 +263,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Scaling
 				});
 
@@ -270,7 +291,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and equal length
 			Assert.IsNotNull(targets);
@@ -280,7 +303,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = targets.Length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -288,6 +316,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -295,7 +324,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Rotation,
 					spaceType = spaceType == SpaceType.World
 						? TweenSpaceType.WorldRotation
@@ -328,7 +357,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and have sufficient capacity for the intended slice.
 			Assert.IsNotNull(targets);
@@ -340,7 +371,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -348,6 +384,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets, startIndex, length);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -357,7 +394,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Rotation,
 					spaceType = spaceType == SpaceType.World
 						? TweenSpaceType.WorldRotation
@@ -392,7 +429,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and have equal length
 			Assert.IsNotNull(targets);
@@ -410,7 +449,13 @@ namespace JCMG.JTween
 			              fromScaleArray.Length == toScaleArray.Length);
 
 			var batchIndex = _transforms.Length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)targets.Length });
+			var batchLength = targets.Length;
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -418,6 +463,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets);
 			for (var i = 0; i < targets.Length; i++)
 			{
@@ -425,7 +471,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Movement |
 									TweenTransformType.Rotation |
 									TweenTransformType.Scaling,
@@ -465,7 +511,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			// Ensure that our arrays are non-null and have sufficient capacity for the intended slice.
 			Assert.IsNotNull(targets);
@@ -481,7 +529,12 @@ namespace JCMG.JTween
 
 			var batchIndex = _transforms.Length;
 			var batchLength = length;
-			_tweenBatches.Add(new TweenBatch { startIndex = (uint)batchIndex, length = (uint)batchLength });
+			_tweenBatches.Add(new TweenBatch
+			{
+				startIndex = (uint)batchIndex,
+				length = (uint)batchLength,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted
+			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
@@ -489,6 +542,7 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+			_tweenBatchEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 			_transforms.AddRange(targets, startIndex, length);
 			for (var i = 0; i < batchLength; i++)
 			{
@@ -498,7 +552,7 @@ namespace JCMG.JTween
 
 				_tweenStates.Add(new TweenTransformState
 				{
-					isPlaying = TRUE,
+					state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 					transformType = TweenTransformType.Movement |
 					                TweenTransformType.Rotation |
 					                TweenTransformType.Scaling,
@@ -522,13 +576,6 @@ namespace JCMG.JTween
 				_tweenRotationLifetimes.Add(lifetime);
 				_tweenScaleLifetimes.Add(lifetime);
 			}
-		}
-
-		protected override void Setup()
-		{
-			base.Setup();
-
-			_batchComparer = new TweenBatchComparer();
 		}
 
 		protected override void Teardown()
@@ -555,6 +602,18 @@ namespace JCMG.JTween
 				return;
 			}
 
+			for (var i = 0; i < _tweenBatches.Length; i++)
+			{
+				var tweenBatch = _tweenBatches.buffer[i];
+				if ((tweenBatch.state & TweenStateType.JustStarted) == TweenStateType.JustStarted)
+				{
+					tweenBatch.state &= ~TweenStateType.JustStarted;
+					_tweenBatches.buffer[i] = tweenBatch;
+
+					_eventQueue.Add(_tweenBatchEvents.buffer[i]);
+				}
+			}
+
 			// Create and setup native collections. Copy over existing data
 			CreateNativeTransformCollections();
 
@@ -577,6 +636,20 @@ namespace JCMG.JTween
 			SetupJobs();
 
 			_isJobScheduled = true;
+
+			Profiler.EndSample();
+
+			Profiler.BeginSample(EVENT_STARTED_PROFILE);
+
+			// After all sensitive native work has completed, kick out any and all started events
+			for (var i = _eventQueue.Length - 1; i >= 0; i--)
+			{
+				// Pop the latest element so that if a downstream error occurs we do not repeat it
+				// endlessly and block the queue.
+				var tweenEvent = _eventQueue.PopLast();
+
+				tweenEvent.Started?.Invoke();
+			}
 
 			Profiler.EndSample();
 		}
@@ -606,11 +679,10 @@ namespace JCMG.JTween
 
 			// Sort batches from earliest index to latest, check for any completed batches,
 			// and then remove en masse tweens where their batch is complete.
-			Array.Sort(_tweenBatches.buffer, 0, _tweenBatches.Length, _batchComparer);
 			for (var i = _tweenBatches.Length - 1; i >= 0; i--)
 			{
 				var batch = _tweenBatches.buffer[i];
-				if (batch.isCompleted == TRUE)
+				if (batch.IsCompleted())
 				{
 					var index = (int)batch.startIndex;
 					var length = (int)batch.length;
@@ -624,6 +696,8 @@ namespace JCMG.JTween
 						Profiler.EndSample();
 					}
 
+					_eventQueue.Add(_tweenBatchEvents.buffer[i]);
+
 					Profiler.BeginSample(FAST_LIST_REMOVE_RANGE);
 
 					_transforms.RemoveRange(index, length);
@@ -635,8 +709,8 @@ namespace JCMG.JTween
 					_tweenRotationLifetimes.RemoveRange(index, length);
 					_tweenScaleLifetimes.RemoveRange(index, length);
 
-					// Shuffle all batches ahead of the current one back one index and update all of their
-					// start indexes to account for the removed batch.
+					// Shuffle all batches ahead of the current one so that their start indexes are adjusted back
+					// based on the length of the batch we are removing.
 					for (var j = i + 1; j < _tweenBatches.Length; j++)
 					{
 						var laterTweenBatch = _tweenBatches.buffer[j];
@@ -646,6 +720,7 @@ namespace JCMG.JTween
 
 					_tweenBatches.RemoveAt(i);
 					_tweenBatchLifetimes.RemoveAt(i);
+					_tweenBatchEvents.RemoveAt(i);
 
 					Profiler.EndSample();
 				}
@@ -656,6 +731,20 @@ namespace JCMG.JTween
 
 			_nativeTweenBatches.Dispose();
 			_nativeTweenBatchLifetimes.Dispose();
+
+			Profiler.EndSample();
+
+			Profiler.BeginSample(EVENT_COMPLETED_PROFILE);
+
+			// After all sensitive native work has completed, kick out any and all completed events
+			for (var i = _eventQueue.Length - 1; i >= 0; i--)
+			{
+				// Pop the latest element so that if a downstream error occurs we do not repeat it
+				// endlessly and block the queue.
+				var tweenEvent = _eventQueue.PopLast();
+
+				tweenEvent.Completed?.Invoke();
+			}
 
 			Profiler.EndSample();
 		}

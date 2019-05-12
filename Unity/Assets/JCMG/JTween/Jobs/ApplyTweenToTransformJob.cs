@@ -20,9 +20,6 @@ namespace JCMG.JTween
 		[ReadOnly]
 		public NativeArray<float3> scales;
 
-		private const byte TRUE = 1;
-		private const byte FALSE = 0;
-
 		public void Execute(int i, TransformAccess transform)
 		{
 			var tweenState = tweenStates[i];

@@ -6,7 +6,22 @@ namespace JCMG.JTween
 	{
 		public uint startIndex;
 		public uint length;
-		public byte isCompleted;
+		public TweenStateType state;
+
+		public bool IsPlaying()
+		{
+			return (state & TweenStateType.IsPlaying) == TweenStateType.IsPlaying;
+		}
+
+		public bool IsPaused()
+		{
+			return (state & TweenStateType.IsPaused) == TweenStateType.IsPaused;
+		}
+
+		public bool IsCompleted()
+		{
+			return (state & TweenStateType.IsCompleted) == TweenStateType.IsCompleted;
+		}
 
 		public bool IncludesIndex(int index)
 		{

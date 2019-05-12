@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace JCMG.JTween
 {
@@ -12,7 +13,9 @@ namespace JCMG.JTween
 				SpaceType spaceType = SpaceType.World,
 				EaseType easeType = EaseType.Linear,
 				LoopType loopType = LoopType.None,
-				int loopCount = 0)
+				int loopCount = 0,
+				Action onStart = null,
+				Action onComplete = null)
 		{
 			_batchTransformTweener.BatchMove(
 				targets,
@@ -22,7 +25,9 @@ namespace JCMG.JTween
 				spaceType,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchMove(
@@ -35,7 +40,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchMove(
 				targets,
@@ -47,7 +54,9 @@ namespace JCMG.JTween
 				spaceType,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchScale(
@@ -58,7 +67,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchScale(
 				targets,
@@ -67,7 +78,9 @@ namespace JCMG.JTween
 				duration,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchScale(
@@ -80,7 +93,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchScale(
 				targets,
@@ -91,7 +106,9 @@ namespace JCMG.JTween
 				duration,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchRotate(
@@ -102,7 +119,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchRotate(
 				targets,
@@ -112,7 +131,9 @@ namespace JCMG.JTween
 				spaceType,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchRotate(
@@ -125,7 +146,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchRotate(
 				targets,
@@ -137,7 +160,9 @@ namespace JCMG.JTween
 				spaceType,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchUpdateTransforms(
@@ -152,7 +177,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchUpdateTransforms(
 				targets,
@@ -166,7 +193,9 @@ namespace JCMG.JTween
 				spaceType,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public void BatchUpdateTransforms(
@@ -183,7 +212,9 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_batchTransformTweener.BatchUpdateTransforms(
 				targets,
@@ -199,7 +230,9 @@ namespace JCMG.JTween
 				spaceType,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 	}
 }

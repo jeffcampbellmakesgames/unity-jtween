@@ -23,7 +23,8 @@ namespace JCMG.JTween
 			if (lifetime.GetProgress() >= 1f)
 			{
 				var tweenBatch = tweenBatches[index];
-				tweenBatch.isCompleted = TRUE;
+				tweenBatch.state |= TweenStateType.IsCompleted;
+				tweenBatch.state &= ~TweenStateType.IsPlaying;
 				tweenBatches[index] = tweenBatch;
 			}
 		}

@@ -168,7 +168,7 @@ MonoBehaviour:
   _startY: 1
   _spacing: 3
   _duration: 0.66
-  _loopCount: 5
+  _loopCount: 1
   _rowColumnLength: 100
   _capacity: 1000
   _tweenSpawnInterval: 0.5
