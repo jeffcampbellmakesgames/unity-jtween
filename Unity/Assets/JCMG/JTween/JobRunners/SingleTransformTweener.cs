@@ -97,16 +97,15 @@ namespace JCMG.JTween
 				isPlaying = TRUE,
 				transformType = TweenTransformType.Rotation,
 				spaceType = spaceType == SpaceType.World
-					? TweenSpaceType.WorldRotation
-					: TweenSpaceType.LocalRotation
+					? TweenSpaceType.WorldRotation | TweenSpaceType.RotateModeXYZ
+					: TweenSpaceType.LocalRotation | TweenSpaceType.RotateModeXYZ
 			});
 
 			_tweenPositions.Add(new TweenFloat3());
 			_tweenRotations.Add(new TweenRotation
 			{
 				from = from,
-				to = to,
-				rotateMode = RotateMode.XYZ
+				to = to
 			});
 			_tweenScales.Add(new TweenFloat3());
 
@@ -134,13 +133,14 @@ namespace JCMG.JTween
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
 
+			var rotateType = JTweenTools.GetTweenSpaceTypeFromRotateMode(rotateMode);
 			_tweenStates.Add(new TweenTransformState
 			{
 				isPlaying = TRUE,
 				transformType = TweenTransformType.Rotation,
 				spaceType = spaceType == SpaceType.World
-					? TweenSpaceType.WorldRotation
-					: TweenSpaceType.LocalRotation
+					? TweenSpaceType.WorldRotation | rotateType
+					: TweenSpaceType.LocalRotation | rotateType
 			});
 
 			_tweenPositions.Add(new TweenFloat3());
@@ -152,8 +152,7 @@ namespace JCMG.JTween
 			_tweenRotations.Add(new TweenRotation
 			{
 				from = new quaternion(eulerAngles.x, eulerAngles.y, eulerAngles.z, 0),
-				angle = angle,
-				rotateMode = rotateMode
+				angle = angle
 			});
 			_tweenScales.Add(new TweenFloat3());
 

@@ -1,10 +1,35 @@
-﻿using Unity.Collections;
+﻿using System;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
 namespace JCMG.JTween
 {
 	internal static class JTweenTools
 	{
+		public static TweenSpaceType GetTweenSpaceTypeFromRotateMode(RotateMode rotateMode)
+		{
+			TweenSpaceType spaceType;
+			switch (rotateMode)
+			{
+				case RotateMode.XYZ:
+					spaceType = TweenSpaceType.RotateModeXYZ;
+					break;
+				case RotateMode.X:
+					spaceType = TweenSpaceType.RotateX;
+					break;
+				case RotateMode.Y:
+					spaceType = TweenSpaceType.RotateY;
+					break;
+				case RotateMode.Z:
+					spaceType = TweenSpaceType.RotateZ;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(rotateMode), rotateMode, null);
+			}
+
+			return spaceType;
+		}
+
 		#region Unsafe Array Copy Methods
 
 		public static unsafe void CopyTweenStateDirectlyToNativeArray(TweenTransformState[] sourceArray, NativeArray<TweenTransformState> destinationArray, int length)

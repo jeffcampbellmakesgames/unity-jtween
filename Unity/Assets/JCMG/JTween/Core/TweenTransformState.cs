@@ -37,5 +37,44 @@ namespace JCMG.JTween
 		{
 			return (transformType & TweenTransformType.Scaling) == TweenTransformType.Scaling;
 		}
+
+		public bool IsRotationXYZ()
+		{
+			return (spaceType & TweenSpaceType.RotateModeXYZ) == TweenSpaceType.RotateModeXYZ;
+		}
+
+		public bool IsRotationX()
+		{
+			return (spaceType & TweenSpaceType.RotateX) == TweenSpaceType.RotateX;
+		}
+
+		public bool IsRotationY()
+		{
+			return (spaceType & TweenSpaceType.RotateY) == TweenSpaceType.RotateY;
+		}
+
+		public bool IsRotationZ()
+		{
+			return (spaceType & TweenSpaceType.RotateZ) == TweenSpaceType.RotateZ;
+		}
+
+		public RotateMode GetRotateMode()
+		{
+			var rotateMode = RotateMode.XYZ;
+			if (IsRotationX())
+			{
+				rotateMode = RotateMode.X;
+			}
+			else if (IsRotationY())
+			{
+				rotateMode = RotateMode.Y;
+			}
+			else if (IsRotationZ())
+			{
+				rotateMode = RotateMode.Z;
+			}
+
+			return rotateMode;
+		}
 	}
 }

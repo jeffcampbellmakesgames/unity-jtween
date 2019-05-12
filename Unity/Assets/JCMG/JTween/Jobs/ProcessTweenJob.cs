@@ -66,7 +66,10 @@ namespace JCMG.JTween
 				tweenRotationLifetimes[i] = tweenLifetime;
 
 				var progress = tweenLifetime.GetProgress();
-				rotations[i] = tweenRotations[i].GetRotation(tweenLifetime.GetEase(), tweenLifetime.isReversed == TRUE);
+				rotations[i] = tweenRotations[i].GetRotation(
+					tweenLifetime.GetEase(),
+					tweenLifetime.isReversed == TRUE,
+					tweenState.GetRotateMode());
 				tweenIsPlaying = progress < 1f;
 			}
 
