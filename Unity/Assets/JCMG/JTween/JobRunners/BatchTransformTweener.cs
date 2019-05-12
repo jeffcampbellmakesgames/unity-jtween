@@ -68,7 +68,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
+					transformType = TweenTransformType.Movement,
 					moveSpaceType = spaceType
 				});
 
@@ -128,7 +128,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
+					transformType = TweenTransformType.Movement,
 					moveSpaceType = spaceType
 				});
 
@@ -182,7 +182,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
+					transformType = TweenTransformType.Scaling,
 					moveSpaceType = spaceType
 				});
 
@@ -242,7 +242,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
+					transformType = TweenTransformType.Scaling,
 					moveSpaceType = spaceType
 				});
 
@@ -296,7 +296,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
+					transformType = TweenTransformType.Rotation,
 					moveSpaceType = spaceType
 				});
 
@@ -356,7 +356,7 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isScalingEnabled = TRUE,
+					transformType = TweenTransformType.Rotation,
 					moveSpaceType = spaceType
 				});
 
@@ -422,9 +422,9 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
-					isRotationEnabled = TRUE,
-					isScalingEnabled = TRUE,
+					transformType = TweenTransformType.Movement |
+									TweenTransformType.Rotation |
+									TweenTransformType.Scaling,
 					moveSpaceType = spaceType
 				});
 
@@ -493,9 +493,9 @@ namespace JCMG.JTween
 				_tweenStates.Add(new TweenTransformState
 				{
 					isPlaying = TRUE,
-					isMovementEnabled = TRUE,
-					isRotationEnabled = TRUE,
-					isScalingEnabled = TRUE,
+					transformType = TweenTransformType.Movement |
+					                TweenTransformType.Rotation |
+					                TweenTransformType.Scaling,
 					moveSpaceType = spaceType
 				});
 

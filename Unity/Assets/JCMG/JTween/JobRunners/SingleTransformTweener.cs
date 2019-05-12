@@ -25,7 +25,7 @@ namespace JCMG.JTween
 			_tweenStates.Add(new TweenTransformState
 			{
 				isPlaying = TRUE,
-				isMovementEnabled = TRUE,
+				transformType = TweenTransformType.Movement,
 				moveSpaceType = spaceType
 			});
 
@@ -56,7 +56,11 @@ namespace JCMG.JTween
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
 
-			_tweenStates.Add(new TweenTransformState { isPlaying = TRUE, isScalingEnabled = TRUE });
+			_tweenStates.Add(new TweenTransformState
+			{
+				isPlaying = TRUE,
+				transformType = TweenTransformType.Scaling
+			});
 
 			_tweenPositions.Add(new TweenFloat3());
 			_tweenRotations.Add(new TweenRotation());
@@ -89,7 +93,7 @@ namespace JCMG.JTween
 			_tweenStates.Add(new TweenTransformState
 			{
 				isPlaying = TRUE,
-				isRotationEnabled = TRUE,
+				transformType = TweenTransformType.Rotation,
 				rotateSpaceType = spaceType
 			});
 
@@ -129,7 +133,7 @@ namespace JCMG.JTween
 			_tweenStates.Add(new TweenTransformState
 			{
 				isPlaying = TRUE,
-				isRotationEnabled = TRUE,
+				transformType = TweenTransformType.Rotation,
 				rotateSpaceType = spaceType
 			});
 
