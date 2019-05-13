@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace JCMG.JTween
 {
@@ -10,7 +11,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Move(
 				transform,
@@ -20,7 +23,9 @@ namespace JCMG.JTween
 				SpaceType.World,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void Move(
@@ -30,7 +35,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Move(
 				transform,
@@ -40,7 +47,9 @@ namespace JCMG.JTween
 				SpaceType.World,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void MoveLocal(
@@ -49,7 +58,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Move(
 				transform,
@@ -59,7 +70,9 @@ namespace JCMG.JTween
 				SpaceType.Local,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void MoveLocal(
@@ -69,7 +82,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Move(
 				transform,
@@ -79,7 +94,9 @@ namespace JCMG.JTween
 				SpaceType.Local,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void Scale(
@@ -88,7 +105,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Scale(
 				transform,
@@ -97,7 +116,9 @@ namespace JCMG.JTween
 				duration,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void Scale(
@@ -107,7 +128,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Scale(
 				transform,
@@ -116,7 +139,9 @@ namespace JCMG.JTween
 				duration,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void Rotate(
@@ -126,7 +151,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Rotate(
 				transform,
@@ -136,7 +163,9 @@ namespace JCMG.JTween
 				SpaceType.World,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void Rotate(
@@ -145,7 +174,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Rotate(
 				transform,
@@ -155,7 +186,9 @@ namespace JCMG.JTween
 				SpaceType.World,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateLocal(
@@ -165,7 +198,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Rotate(
 				transform,
@@ -175,7 +210,9 @@ namespace JCMG.JTween
 				SpaceType.Local,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateLocal(
@@ -184,7 +221,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.Rotate(
 				transform,
@@ -194,7 +233,9 @@ namespace JCMG.JTween
 				SpaceType.Local,
 				easeType,
 				loopType,
-				loopCount);
+				loopCount,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateX(
@@ -203,7 +244,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.RotateOnAxis(
 				transform,
@@ -213,7 +256,9 @@ namespace JCMG.JTween
 				easeType,
 				loopType,
 				loopCount,
-				RotateMode.X);
+				RotateMode.X,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateY(
@@ -222,7 +267,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.RotateOnAxis(
 				transform,
@@ -232,7 +279,9 @@ namespace JCMG.JTween
 				easeType,
 				loopType,
 				loopCount,
-				RotateMode.Y);
+				RotateMode.Y,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateZ(
@@ -241,7 +290,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.RotateOnAxis(
 				transform,
@@ -251,7 +302,9 @@ namespace JCMG.JTween
 				easeType,
 				loopType,
 				loopCount,
-				RotateMode.Z);
+				RotateMode.Z,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateXLocal(
@@ -260,7 +313,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.RotateOnAxis(
 				transform,
@@ -279,7 +334,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.RotateOnAxis(
 				transform,
@@ -289,7 +346,9 @@ namespace JCMG.JTween
 				easeType,
 				loopType,
 				loopCount,
-				RotateMode.Y);
+				RotateMode.Y,
+				onStart,
+				onComplete);
 		}
 
 		public static void RotateZLocal(
@@ -298,7 +357,9 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			JTweenControl.Instance.RotateOnAxis(
 				transform,
@@ -308,7 +369,9 @@ namespace JCMG.JTween
 				easeType,
 				loopType,
 				loopCount,
-				RotateMode.Z);
+				RotateMode.Z,
+				onStart,
+				onComplete);
 		}
 	}
 }
