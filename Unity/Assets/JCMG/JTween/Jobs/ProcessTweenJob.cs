@@ -42,7 +42,7 @@ namespace JCMG.JTween
 		public void Execute(int i)
 		{
 			var tweenState = tweenStates[i];
-			if (tweenState.isPlaying == FALSE)
+			if (tweenState.IsCompleted() || tweenState.IsPaused())
 			{
 				return;
 			}
@@ -84,7 +84,9 @@ namespace JCMG.JTween
 				tweenIsPlaying = progress < 1f;
 			}
 
-			tweenState.isPlaying = tweenIsPlaying ? TRUE : FALSE;
+			tweenState.state |= tweenIsPlaying
+				? TweenStateType.IsPlaying
+				: TweenStateType.IsCompleted;
 			tweenStates[i] = tweenState;
 		}
 	}

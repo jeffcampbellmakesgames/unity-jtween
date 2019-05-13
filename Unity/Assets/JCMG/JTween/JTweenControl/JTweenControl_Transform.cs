@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace JCMG.JTween
 {
@@ -12,9 +13,11 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
-			_singleTransformTweener.Move(target, from, to, duration, spaceType, easeType, loopType, loopCount);
+			_singleTransformTweener.Move(target, from, to, duration, spaceType, easeType, loopType, loopCount, onStart, onComplete);
 		}
 
 		public void Scale(
@@ -24,9 +27,11 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
-			_singleTransformTweener.Scale(target, from, to, duration, easeType, loopType, loopCount);
+			_singleTransformTweener.Scale(target, from, to, duration, easeType, loopType, loopCount, onStart, onComplete);
 		}
 
 		public void Rotate(
@@ -37,9 +42,11 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
-			_singleTransformTweener.Rotate(target, from, to, duration, spaceType, easeType, loopType, loopCount);
+			_singleTransformTweener.Rotate(target, from, to, duration, spaceType, easeType, loopType, loopCount, onStart, onComplete);
 		}
 
 		public void RotateOnAxis(
@@ -50,7 +57,9 @@ namespace JCMG.JTween
 			EaseType easeType,
 			LoopType loopType,
 			int loopCount,
-			RotateMode rotateMode)
+			RotateMode rotateMode,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_singleTransformTweener.RotateOnAxis(target,
 				angle,
@@ -59,7 +68,9 @@ namespace JCMG.JTween
 				easeType,
 				loopType,
 				loopCount,
-				rotateMode);
+				rotateMode,
+				onStart,
+				onComplete);
 		}
 	}
 }

@@ -1,14 +1,14 @@
-﻿using Unity.Collections;
-using Unity.Jobs;
+﻿using System;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Jobs;
 using UnityEngine.Profiling;
 
 namespace JCMG.JTween
 {
 	internal sealed class SingleTransformTweener : TransformTweenerBase
 	{
+		private readonly FastList<TweenEvent> _tweenEvents = new FastList<TweenEvent>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+
 		public void Move(
 			Transform target,
 			Vector3 from,
@@ -17,14 +17,16 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
 
 			_tweenStates.Add(new TweenTransformState
 			{
-				isPlaying = TRUE,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 				transformType = TweenTransformType.Movement,
 				spaceType = spaceType == SpaceType.World
 					? TweenSpaceType.WorldMovement
@@ -44,6 +46,8 @@ namespace JCMG.JTween
 			});
 			_tweenRotationLifetimes.Add(new TweenLifetime());
 			_tweenScaleLifetimes.Add(new TweenLifetime());
+
+			_tweenEvents.Add(new TweenEvent{Completed = onComplete, Started = onStart});
 		}
 
 		public void Scale(
@@ -53,14 +57,16 @@ namespace JCMG.JTween
 			float duration,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
 
 			_tweenStates.Add(new TweenTransformState
 			{
-				isPlaying = TRUE,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 				transformType = TweenTransformType.Scaling
 			});
 
@@ -77,6 +83,8 @@ namespace JCMG.JTween
 				loopType = loopType,
 				loopCount = (short)loopCount
 			});
+
+			_tweenEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 		}
 
 		public void Rotate(
@@ -87,14 +95,16 @@ namespace JCMG.JTween
 			SpaceType spaceType = SpaceType.World,
 			EaseType easeType = EaseType.Linear,
 			LoopType loopType = LoopType.None,
-			int loopCount = 0)
+			int loopCount = 0,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
 
 			_tweenStates.Add(new TweenTransformState
 			{
-				isPlaying = TRUE,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 				transformType = TweenTransformType.Rotation,
 				spaceType = spaceType == SpaceType.World
 					? TweenSpaceType.WorldRotation | TweenSpaceType.RotateModeXYZ
@@ -118,6 +128,8 @@ namespace JCMG.JTween
 				loopCount = (short)loopCount
 			});
 			_tweenScaleLifetimes.Add(new TweenLifetime());
+
+			_tweenEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 		}
 
 		internal void RotateOnAxis(
@@ -128,7 +140,9 @@ namespace JCMG.JTween
 			EaseType easeType,
 			LoopType loopType,
 			int loopCount,
-			RotateMode rotateMode)
+			RotateMode rotateMode,
+			Action onStart = null,
+			Action onComplete = null)
 		{
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
@@ -136,7 +150,7 @@ namespace JCMG.JTween
 			var rotateType = JTweenTools.GetTweenSpaceTypeFromRotateMode(rotateMode);
 			_tweenStates.Add(new TweenTransformState
 			{
-				isPlaying = TRUE,
+				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
 				transformType = TweenTransformType.Rotation,
 				spaceType = spaceType == SpaceType.World
 					? TweenSpaceType.WorldRotation | rotateType
@@ -165,6 +179,8 @@ namespace JCMG.JTween
 				loopCount = (short)loopCount
 			});
 			_tweenScaleLifetimes.Add(new TweenLifetime());
+
+			_tweenEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
 		}
 
 		protected override void UpdateTweens()
@@ -178,11 +194,37 @@ namespace JCMG.JTween
 				return;
 			}
 
+			// Capture all Started events that need to take place and add them to the event queue.
+			for (var i = 0; i < _tweenStates.Length; i++)
+			{
+				var tweenState = _tweenStates.buffer[i];
+				if ((tweenState.state & TweenStateType.JustStarted) == TweenStateType.JustStarted)
+				{
+					tweenState.state &= ~TweenStateType.JustStarted;
+					_tweenStates.buffer[i] = tweenState;
+					_eventQueue.Add(_tweenEvents.buffer[i]);
+				}
+			}
+
 			CreateNativeTransformCollections();
 
 			SetupJobs();
 
 			_isJobScheduled = true;
+
+			Profiler.EndSample();
+
+			Profiler.BeginSample(EVENT_STARTED_PROFILE);
+
+			// After all sensitive native work has completed, kick out any and all started events
+			for (var i = _eventQueue.Length - 1; i >= 0; i--)
+			{
+				// Pop the latest element so that if a downstream error occurs we do not repeat it
+				// endlessly and block the queue.
+				var tweenEvent = _eventQueue.PopLast();
+
+				tweenEvent.Started?.Invoke();
+			}
 
 			Profiler.EndSample();
 		}
@@ -206,14 +248,16 @@ namespace JCMG.JTween
 			// Get the data we need back from the native collections or if tween completed remove it.
 			CopyNativeCollectionsToManaged();
 
-			for (var i = _nativeTweenStates.Length - 1; i >= 0; i--)
+			for (var i = _tweenStates.Length - 1; i >= 0; i--)
 			{
 				var tweenState = _tweenStates.buffer[i];
-				if (tweenState.isPlaying == FALSE)
+				if (tweenState.IsCompleted())
 				{
 					Profiler.BeginSample(TRANSFORM_ACCESS_ARRAY_REMOVE_PROFILE);
 					_transformAccessArray.RemoveAtSwapBack(i);
 					Profiler.EndSample();
+
+					_eventQueue.Add(_tweenEvents.buffer[i]);
 
 					Profiler.BeginSample(FAST_LIST_REMOVE_AT);
 					_transforms.RemoveAt(i);
@@ -224,12 +268,27 @@ namespace JCMG.JTween
 					_tweenPositionLifetimes.RemoveAt(i);
 					_tweenRotationLifetimes.RemoveAt(i);
 					_tweenScaleLifetimes.RemoveAt(i);
+					_tweenEvents.RemoveAt(i);
 					Profiler.EndSample();
 				}
 			}
 
 			// Properly dispose of the native collections
 			DisposeNativeTransformCollections();
+
+			Profiler.EndSample();
+
+			Profiler.BeginSample(EVENT_COMPLETED_PROFILE);
+
+			// After all sensitive native work has completed, kick out any and all completed events
+			for (var i = _eventQueue.Length - 1; i >= 0; i--)
+			{
+				// Pop the latest element so that if a downstream error occurs we do not repeat it
+				// endlessly and block the queue.
+				var tweenEvent = _eventQueue.PopLast();
+
+				tweenEvent.Completed?.Invoke();
+			}
 
 			Profiler.EndSample();
 		}
