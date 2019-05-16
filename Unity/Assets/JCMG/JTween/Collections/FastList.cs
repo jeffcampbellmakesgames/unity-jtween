@@ -142,6 +142,22 @@ namespace JCMG.JTween
 			}
 		}
 
+		public int IndexOf(T item)
+		{
+			var equalityComparer = EqualityComparer<T>.Default;
+			for (var i = 0; i < _length; ++i)
+			{
+				if (!equalityComparer.Equals(buffer[i], item))
+				{
+					continue;
+				}
+
+				return i;
+			}
+
+			return -1;
+		}
+
 		public void RemoveAt(int index)
 		{
 			--_length;
