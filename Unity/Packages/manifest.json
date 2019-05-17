@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.jeffcampbellmakesgames.packagetools": "https://github.com/jeffcampbellmakesgames/unity-package-tools.git#release/stable",
     "com.unity.burst": "1.0.0",
     "com.unity.collections": "0.0.9-preview.18",
     "com.unity.jobs": "0.0.7-preview.11",
@@ -35,5 +36,11 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
+  },
+  "lock": {
+    "com.jeffcampbellmakesgames.packagetools": {
+      "hash": "2c2578f315df7c37dfd9158389f2b40424b63873",
+      "revision": "release/stable"
+    }
   }
 }
