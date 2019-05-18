@@ -37,7 +37,6 @@ namespace JCMG.JTween
 		public float deltaTime;
 
 		private const byte TRUE = 1;
-		private const byte FALSE = 0;
 
 		public void Execute(int i)
 		{
@@ -84,9 +83,16 @@ namespace JCMG.JTween
 				tweenIsPlaying = progress < 1f;
 			}
 
-			tweenState.state |= tweenIsPlaying
-				? TweenStateType.IsPlaying
-				: TweenStateType.IsCompleted;
+			if (!tweenIsPlaying)
+			{
+				if (!tweenState.HasHandle())
+				{
+					tweenState.state |= TweenStateType.RequiresRecycling;
+				}
+
+				tweenState.state |= TweenStateType.JustEnded;
+			}
+
 			tweenStates[i] = tweenState;
 		}
 	}

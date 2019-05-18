@@ -8,13 +8,12 @@ namespace JCMG.JTween
 		typeof(BatchTransformTweener))]
 	public sealed partial class JTweenControl : Singleton<JTweenControl>
 	{
-		// Constants
-		private const byte TRUE = 1;
-		private const byte FALSE = 0;
-		private const short INFINITE_LOOP = -1;
-
+		// Job Runners
 		private SingleTransformTweener _singleTransformTweener;
 		private BatchTransformTweener _batchTransformTweener;
+
+		// Constants
+		private ITweenHandle _invalidTweenHandle;
 
 		protected override void Awake()
 		{

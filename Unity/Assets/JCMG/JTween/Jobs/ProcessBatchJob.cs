@@ -7,23 +7,31 @@ namespace JCMG.JTween
 	{
 		public NativeArray<TweenLifetime> batchLifetimes;
 
-		public NativeArray<TweenBatch> tweenBatches;
+		public NativeArray<TweenTransformBatchState> tweenBatches;
 
 		public float deltaTime;
 
-		private const byte TRUE = 1;
-		private const byte FALSE = 0;
-
 		public void Execute(int index)
 		{
+			var tweenBatch = tweenBatches[index];
+			if (tweenBatch.IsCompleted() || tweenBatch.IsPaused())
+			{
+				return;
+			}
+
 			var lifetime = batchLifetimes[index];
 			lifetime.Update(deltaTime);
 			batchLifetimes[index] = lifetime;
 
 			if (lifetime.GetProgress() >= 1f)
 			{
-				var tweenBatch = tweenBatches[index];
+				if (!tweenBatch.HasHandle())
+				{
+					tweenBatch.state |= TweenStateType.RequiresRecycling;
+				}
+
 				tweenBatch.state |= TweenStateType.IsCompleted;
+				tweenBatch.state |= TweenStateType.JustEnded;
 				tweenBatch.state &= ~TweenStateType.IsPlaying;
 				tweenBatches[index] = tweenBatch;
 			}

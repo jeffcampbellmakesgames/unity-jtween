@@ -32,7 +32,10 @@ namespace JCMG.JTween
 
 		#region Unsafe Array Copy Methods
 
-		public static unsafe void CopyTweenStateDirectlyToNativeArray(TweenTransformState[] sourceArray, NativeArray<TweenTransformState> destinationArray, int length)
+		public static unsafe void CopyTweenStateDirectlyToNativeArray(
+			TweenTransformState[] sourceArray,
+			NativeArray<TweenTransformState> destinationArray,
+			int length)
 		{
 			fixed (void* arrayPointer = sourceArray)
 			{
@@ -43,7 +46,9 @@ namespace JCMG.JTween
 			}
 		}
 
-		public static unsafe void CopyNativeArrayDirectlyToTweenState(NativeArray<TweenTransformState> sourceArray, TweenTransformState[] destinationArray)
+		public static unsafe void CopyNativeArrayDirectlyToTweenState(
+			NativeArray<TweenTransformState> sourceArray,
+			TweenTransformState[] destinationArray)
 		{
 			fixed (void* arrayPointer = destinationArray)
 			{
@@ -54,7 +59,10 @@ namespace JCMG.JTween
 			}
 		}
 
-		public static unsafe void CopyTweenLifetimeDirectlyToNativeArray(TweenLifetime[] sourceArray, NativeArray<TweenLifetime> destinationArray, int length)
+		public static unsafe void CopyTweenLifetimeDirectlyToNativeArray(
+			TweenLifetime[] sourceArray,
+			NativeArray<TweenLifetime> destinationArray,
+			int length)
 		{
 			fixed (void* arrayPointer = sourceArray)
 			{
@@ -65,7 +73,9 @@ namespace JCMG.JTween
 			}
 		}
 
-		public static unsafe void CopyNativeArrayDirectlyToTweenLifetime(NativeArray<TweenLifetime> sourceArray, TweenLifetime[] destinationArray)
+		public static unsafe void CopyNativeArrayDirectlyToTweenLifetime(
+			NativeArray<TweenLifetime> sourceArray,
+			TweenLifetime[] destinationArray)
 		{
 			fixed (void* arrayPointer = destinationArray)
 			{
@@ -76,29 +86,37 @@ namespace JCMG.JTween
 			}
 		}
 
-		public static unsafe void CopyTweenBatchDirectlyToNativeArray(TweenBatch[] sourceArray, NativeArray<TweenBatch> destinationArray, int length)
+		public static unsafe void CopyTweenBatchDirectlyToNativeArray(
+			TweenTransformBatchState[] sourceArray,
+			NativeArray<TweenTransformBatchState> destinationArray,
+			int length)
 		{
 			fixed (void* arrayPointer = sourceArray)
 			{
 				UnsafeUtility.MemCpy(
 					NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(destinationArray),
 					arrayPointer,
-					length * TweenBatch.SizeOf());
+					length * TweenTransformBatchState.SizeOf());
 			}
 		}
 
-		public static unsafe void CopyNativeArrayDirectlyToTweenBatch(NativeArray<TweenBatch> sourceArray, TweenBatch[] destinationArray)
+		public static unsafe void CopyNativeArrayDirectlyToTweenBatch(
+			NativeArray<TweenTransformBatchState> sourceArray,
+			TweenTransformBatchState[] destinationArray)
 		{
 			fixed (void* arrayPointer = destinationArray)
 			{
 				UnsafeUtility.MemCpy(
 					arrayPointer,
 					NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(sourceArray),
-					sourceArray.Length * TweenBatch.SizeOf());
+					sourceArray.Length * TweenTransformBatchState.SizeOf());
 			}
 		}
 
-		public static unsafe void CopyTween3DirectlyToNativeArray(TweenFloat3[] sourceArray, NativeArray<TweenFloat3> destinationArray, int length)
+		public static unsafe void CopyTween3DirectlyToNativeArray(
+			TweenFloat3[] sourceArray,
+			NativeArray<TweenFloat3> destinationArray,
+			int length)
 		{
 			fixed (void* arrayPointer = sourceArray)
 			{
@@ -109,7 +127,10 @@ namespace JCMG.JTween
 			}
 		}
 
-		public static unsafe void CopyTweenRotationDirectlyToNativeArray(TweenRotation[] sourceArray, NativeArray<TweenRotation> destinationArray, int length)
+		public static unsafe void CopyTweenRotationDirectlyToNativeArray(
+			TweenRotation[] sourceArray,
+			NativeArray<TweenRotation> destinationArray,
+			int length)
 		{
 			fixed (void* arrayPointer = sourceArray)
 			{

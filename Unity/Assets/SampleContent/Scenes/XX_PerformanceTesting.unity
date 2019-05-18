@@ -166,10 +166,10 @@ MonoBehaviour:
   _moveGameObject: {fileID: 800001747}
   _startX: 1
   _startY: 1
-  _spacing: 3
-  _duration: 0.66
-  _loopCount: 1
-  _rowColumnLength: 100
+  _spacing: 1
+  _duration: 3
+  _loopCount: -1
+  _rowColumnLength: 50
   _capacity: 1000
   _tweenSpawnInterval: 0.5
   _minSpawn: 7
@@ -202,7 +202,7 @@ MonoBehaviour:
   _numberOfLevels: 20
   _maxItemsPerLevel: 200
   _radius: 30
-  _mode: 4
+  _mode: 6
   _delay: 2
   _easeType: 27
   _loopType: 2

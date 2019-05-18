@@ -7,47 +7,74 @@ namespace JCMG.JTween
 {
 	internal sealed class SingleTransformTweener : TransformTweenerBase
 	{
-		private readonly FastList<TweenEvent> _tweenEvents = new FastList<TweenEvent>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		// Managed lists of tween data
+		private readonly FastList<TweenHandle> _tweenAccessors = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
 		public void Move(
 			Transform target,
 			Vector3 from,
 			Vector3 to,
 			float duration,
-			SpaceType spaceType = SpaceType.World,
-			EaseType easeType = EaseType.Linear,
-			LoopType loopType = LoopType.None,
-			int loopCount = 0,
-			Action onStart = null,
-			Action onComplete = null)
+			SpaceType spaceType,
+			EaseType easeType,
+			LoopType loopType,
+			int loopCount,
+			Action onStart,
+			Action onComplete,
+			bool useTweenHandle,
+			out ITweenHandle tweenHandle)
 		{
+			tweenHandle = null;
+
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
-
 			_tweenStates.Add(new TweenTransformState
 			{
-				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
+				state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START,
 				transformType = TweenTransformType.Movement,
 				spaceType = spaceType == SpaceType.World
 					? TweenSpaceType.WorldMovement
 					: TweenSpaceType.LocalMovement
 			});
-
 			_tweenPositions.Add(new TweenFloat3 { from = from, to = to });
 			_tweenRotations.Add(new TweenRotation());
 			_tweenScales.Add(new TweenFloat3());
-
 			_tweenPositionLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount
+				loopCount = (short)loopCount,
+				originalLoopCount = (short)loopCount
 			});
 			_tweenRotationLifetimes.Add(new TweenLifetime());
 			_tweenScaleLifetimes.Add(new TweenLifetime());
+			var hasEvents = onStart != null || onComplete != null;
+			if (useTweenHandle || hasEvents)
+			{
+				var tweenAccessor = GetNextAvailableTweenAccessor();
+				if (onStart != null)
+				{
+					tweenAccessor.AddOnStartedListener(onStart);
+				}
 
-			_tweenEvents.Add(new TweenEvent{Completed = onComplete, Started = onStart});
+				if (onComplete != null)
+				{
+					tweenAccessor.AddOnCompetedListener(onComplete);
+				}
+
+				_tweenAccessors.Add(tweenAccessor);
+
+				// Only populate the out parameter if explicitly called out for.
+				if (useTweenHandle)
+				{
+					tweenHandle = tweenAccessor;
+				}
+			}
+			else
+			{
+				_tweenAccessors.Add(null);
+			}
 		}
 
 		public void Scale(
@@ -55,25 +82,26 @@ namespace JCMG.JTween
 			Vector3 from,
 			Vector3 to,
 			float duration,
-			EaseType easeType = EaseType.Linear,
-			LoopType loopType = LoopType.None,
-			int loopCount = 0,
-			Action onStart = null,
-			Action onComplete = null)
+			EaseType easeType,
+			LoopType loopType,
+			int loopCount,
+			Action onStart,
+			Action onComplete,
+			bool useTweenHandle,
+			out ITweenHandle tweenHandle)
 		{
+			tweenHandle = null;
+
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
-
 			_tweenStates.Add(new TweenTransformState
 			{
-				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
+				state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START,
 				transformType = TweenTransformType.Scaling
 			});
-
 			_tweenPositions.Add(new TweenFloat3());
 			_tweenRotations.Add(new TweenRotation());
 			_tweenScales.Add(new TweenFloat3 { from = from, to = to });
-
 			_tweenPositionLifetimes.Add(new TweenLifetime());
 			_tweenRotationLifetimes.Add(new TweenLifetime());
 			_tweenScaleLifetimes.Add(new TweenLifetime
@@ -81,10 +109,35 @@ namespace JCMG.JTween
 				duration = duration,
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount
+				loopCount = (short)loopCount,
+				originalLoopCount = (short)loopCount
 			});
+			var hasEvents = onStart != null || onComplete != null;
+			if (useTweenHandle || hasEvents)
+			{
+				var tweenAccessor = GetNextAvailableTweenAccessor();
+				if (onStart != null)
+				{
+					tweenAccessor.AddOnStartedListener(onStart);
+				}
 
-			_tweenEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
+				if (onComplete != null)
+				{
+					tweenAccessor.AddOnCompetedListener(onComplete);
+				}
+
+				_tweenAccessors.Add(tweenAccessor);
+
+				// Only populate the out parameter if explicitly called out for.
+				if (useTweenHandle)
+				{
+					tweenHandle = tweenAccessor;
+				}
+			}
+			else
+			{
+				_tweenAccessors.Add(null);
+			}
 		}
 
 		public void Rotate(
@@ -92,25 +145,27 @@ namespace JCMG.JTween
 			Quaternion from,
 			Quaternion to,
 			float duration,
-			SpaceType spaceType = SpaceType.World,
-			EaseType easeType = EaseType.Linear,
-			LoopType loopType = LoopType.None,
-			int loopCount = 0,
-			Action onStart = null,
-			Action onComplete = null)
+			SpaceType spaceType,
+			EaseType easeType,
+			LoopType loopType,
+			int loopCount,
+			Action onStart,
+			Action onComplete,
+			bool useTweenHandle,
+			out ITweenHandle tweenHandle)
 		{
+			tweenHandle = null;
+
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
-
 			_tweenStates.Add(new TweenTransformState
 			{
-				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
+				state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START,
 				transformType = TweenTransformType.Rotation,
 				spaceType = spaceType == SpaceType.World
 					? TweenSpaceType.WorldRotation | TweenSpaceType.RotateModeXYZ
 					: TweenSpaceType.LocalRotation | TweenSpaceType.RotateModeXYZ
 			});
-
 			_tweenPositions.Add(new TweenFloat3());
 			_tweenRotations.Add(new TweenRotation
 			{
@@ -118,69 +173,119 @@ namespace JCMG.JTween
 				to = to
 			});
 			_tweenScales.Add(new TweenFloat3());
-
 			_tweenPositionLifetimes.Add(new TweenLifetime());
 			_tweenRotationLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount
+				loopCount = (short)loopCount,
+				originalLoopCount = (short)loopCount
 			});
 			_tweenScaleLifetimes.Add(new TweenLifetime());
+			var hasEvents = onStart != null || onComplete != null;
+			if (useTweenHandle || hasEvents)
+			{
+				var tweenAccessor = GetNextAvailableTweenAccessor();
+				if (onStart != null)
+				{
+					tweenAccessor.AddOnStartedListener(onStart);
+				}
 
-			_tweenEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
+				if (onComplete != null)
+				{
+					tweenAccessor.AddOnCompetedListener(onComplete);
+				}
+
+				_tweenAccessors.Add(tweenAccessor);
+
+				// Only populate the out parameter if explicitly called out for.
+				if (useTweenHandle)
+				{
+					tweenHandle = tweenAccessor;
+				}
+			}
+			else
+			{
+				_tweenAccessors.Add(null);
+			}
 		}
 
 		internal void RotateOnAxis(
 			Transform target,
 			float angle,
 			float duration,
+			RotateMode rotateMode,
 			SpaceType spaceType,
 			EaseType easeType,
 			LoopType loopType,
 			int loopCount,
-			RotateMode rotateMode,
-			Action onStart = null,
-			Action onComplete = null)
+			Action onStart,
+			Action onComplete,
+			bool useTweenHandle,
+			out ITweenHandle tweenHandle)
 		{
+			tweenHandle = null;
+
 			_transforms.Add(target);
 			_transformAccessArray.Add(target);
 
 			var rotateType = JTweenTools.GetTweenSpaceTypeFromRotateMode(rotateMode);
 			_tweenStates.Add(new TweenTransformState
 			{
-				state = TweenStateType.IsPlaying | TweenStateType.JustStarted,
+				state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START,
 				transformType = TweenTransformType.Rotation,
 				spaceType = spaceType == SpaceType.World
 					? TweenSpaceType.WorldRotation | rotateType
 					: TweenSpaceType.LocalRotation | rotateType
 			});
-
 			_tweenPositions.Add(new TweenFloat3());
 
 			var eulerAngles = spaceType == SpaceType.World
 				? target.eulerAngles
 				: target.localEulerAngles;
-
 			_tweenRotations.Add(new TweenRotation
 			{
 				from = new quaternion(eulerAngles.x, eulerAngles.y, eulerAngles.z, 0),
 				angle = angle
 			});
 			_tweenScales.Add(new TweenFloat3());
-
 			_tweenPositionLifetimes.Add(new TweenLifetime());
 			_tweenRotationLifetimes.Add(new TweenLifetime
 			{
 				duration = duration,
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount
+				loopCount = (short)loopCount,
+				originalLoopCount = (short)loopCount
 			});
 			_tweenScaleLifetimes.Add(new TweenLifetime());
+			var hasEvents = onStart != null || onComplete != null;
+			if (useTweenHandle || hasEvents)
+			{
+				var tweenAccessor = GetNextAvailableTweenAccessor();
+				if (onStart != null)
+				{
+					tweenAccessor.AddOnStartedListener(onStart);
+				}
 
-			_tweenEvents.Add(new TweenEvent { Completed = onComplete, Started = onStart });
+				if (onComplete != null)
+				{
+					tweenAccessor.AddOnCompetedListener(onComplete);
+				}
+
+				_tweenAccessors.Add(tweenAccessor);
+
+				// Only populate the out parameter if explicitly called out for.
+				if (useTweenHandle)
+				{
+					tweenHandle = tweenAccessor;
+				}
+			}
+			else
+			{
+				_tweenAccessors.Add(null);
+			}
 		}
 
 		protected override void UpdateTweens()
@@ -194,15 +299,83 @@ namespace JCMG.JTween
 				return;
 			}
 
+			while (_tweenHandleActionEventQueue.Length > 0)
+			{
+				var tweenHandle = _tweenHandleActionEventQueue.PopLast();
+				var index = _tweenAccessors.IndexOf(tweenHandle);
+				if (index >= 0)
+				{
+					var tweenState = _tweenStates.buffer[index];
+					switch (tweenHandle.actionType)
+					{
+						case TweenHandleActionType.Play:
+							if (!tweenState.IsCompleted() && tweenState.IsPaused())
+							{
+								tweenState.state |= TweenStateType.IsPlaying;
+								tweenState.state &= ~TweenStateType.IsPaused;
+							}
+							break;
+						case TweenHandleActionType.Pause:
+							if (tweenState.IsPlaying())
+							{
+								tweenState.state &= ~TweenStateType.IsPlaying;
+								tweenState.state |= TweenStateType.IsPaused;
+							}
+							break;
+						case TweenHandleActionType.Stop:
+							if (tweenState.IsPlaying() || tweenState.IsPaused())
+							{
+								tweenState.state &= ~TweenStateType.IsPlaying;
+								tweenState.state &= ~TweenStateType.IsPaused;
+								tweenState.state |= TweenStateType.IsCompleted;
+							}
+							break;
+						case TweenHandleActionType.Recycle:
+							tweenState.state &= ~TweenStateType.IsPaused;
+							tweenState.state &= ~TweenStateType.IsPlaying;
+							tweenState.state &= ~TweenStateType.HasHandle;
+							tweenState.state |= TweenStateType.IsCompleted;
+							tweenState.state |= TweenStateType.RequiresRecycling;
+							break;
+						case TweenHandleActionType.Restart:
+							tweenState.state = HANDLE_START_PLAYING;
+							var tweenPosLifetime = _tweenPositionLifetimes.buffer[index];
+							tweenPosLifetime.Restart();
+							_tweenPositionLifetimes.buffer[index] = tweenPosLifetime;
+
+							var tweenRotLifetime = _tweenRotationLifetimes.buffer[index];
+							tweenRotLifetime.Restart();
+							_tweenRotationLifetimes.buffer[index] = tweenRotLifetime;
+
+							var tweenScaleLifetime = _tweenScaleLifetimes.buffer[index];
+							tweenScaleLifetime.Restart();
+							_tweenScaleLifetimes.buffer[index] = tweenScaleLifetime;
+							break;
+						case TweenHandleActionType.None:
+						default:
+							throw new NotImplementedException();
+					}
+					_tweenStates.buffer[index] = tweenState;
+				}
+				else
+				{
+					Debug.LogWarning(RuntimeConstants.HANDLE_NOT_FOUND);
+				}
+			}
+
 			// Capture all Started events that need to take place and add them to the event queue.
 			for (var i = 0; i < _tweenStates.Length; i++)
 			{
 				var tweenState = _tweenStates.buffer[i];
-				if ((tweenState.state & TweenStateType.JustStarted) == TweenStateType.JustStarted)
+				if (tweenState.JustStarted())
 				{
 					tweenState.state &= ~TweenStateType.JustStarted;
 					_tweenStates.buffer[i] = tweenState;
-					_eventQueue.Add(_tweenEvents.buffer[i]);
+
+					if (_tweenAccessors.buffer[i] != null)
+					{
+						_tweenHandleCallbackEventQueue.Add(_tweenAccessors.buffer[i]);
+					}
 				}
 			}
 
@@ -217,11 +390,11 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_STARTED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all started events
-			for (var i = _eventQueue.Length - 1; i >= 0; i--)
+			for (var i = _tweenHandleCallbackEventQueue.Length - 1; i >= 0; i--)
 			{
 				// Pop the latest element so that if a downstream error occurs we do not repeat it
 				// endlessly and block the queue.
-				var tweenEvent = _eventQueue.PopLast();
+				var tweenEvent = _tweenHandleCallbackEventQueue.PopLast();
 
 				tweenEvent.Started?.Invoke();
 			}
@@ -251,25 +424,38 @@ namespace JCMG.JTween
 			for (var i = _tweenStates.Length - 1; i >= 0; i--)
 			{
 				var tweenState = _tweenStates.buffer[i];
+
 				if (tweenState.IsCompleted())
 				{
-					Profiler.BeginSample(TRANSFORM_ACCESS_ARRAY_REMOVE_PROFILE);
-					_transformAccessArray.RemoveAtSwapBack(i);
-					Profiler.EndSample();
+					if (tweenState.JustEnded())
+					{
+						tweenState.state &= ~TweenStateType.JustEnded;
+						_tweenStates.buffer[i] = tweenState;
 
-					_eventQueue.Add(_tweenEvents.buffer[i]);
+						if (_tweenAccessors.buffer[i] != null)
+						{
+							_tweenHandleCallbackEventQueue.Add(_tweenAccessors.buffer[i]);
+						}
+					}
 
-					Profiler.BeginSample(FAST_LIST_REMOVE_AT);
-					_transforms.RemoveAt(i);
-					_tweenStates.RemoveAt(i);
-					_tweenPositions.RemoveAt(i);
-					_tweenRotations.RemoveAt(i);
-					_tweenScales.RemoveAt(i);
-					_tweenPositionLifetimes.RemoveAt(i);
-					_tweenRotationLifetimes.RemoveAt(i);
-					_tweenScaleLifetimes.RemoveAt(i);
-					_tweenEvents.RemoveAt(i);
-					Profiler.EndSample();
+					if (tweenState.RequiresRecycling())
+					{
+						Profiler.BeginSample(TRANSFORM_ACCESS_ARRAY_REMOVE_PROFILE);
+						_transformAccessArray.RemoveAtSwapBack(i);
+						Profiler.EndSample();
+
+						Profiler.BeginSample(FAST_LIST_REMOVE_AT);
+						_transforms.RemoveAt(i);
+						_tweenStates.RemoveAt(i);
+						_tweenPositions.RemoveAt(i);
+						_tweenRotations.RemoveAt(i);
+						_tweenScales.RemoveAt(i);
+						_tweenPositionLifetimes.RemoveAt(i);
+						_tweenRotationLifetimes.RemoveAt(i);
+						_tweenScaleLifetimes.RemoveAt(i);
+						_tweenAccessors.RemoveAt(i);
+						Profiler.EndSample();
+					}
 				}
 			}
 
@@ -281,13 +467,14 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_COMPLETED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all completed events
-			for (var i = _eventQueue.Length - 1; i >= 0; i--)
+			for (var i = _tweenHandleCallbackEventQueue.Length - 1; i >= 0; i--)
 			{
 				// Pop the latest element so that if a downstream error occurs we do not repeat it
 				// endlessly and block the queue.
-				var tweenEvent = _eventQueue.PopLast();
+				var tweenHandle = _tweenHandleCallbackEventQueue.PopLast();
+				_tweenHandlePool.Add(tweenHandle);
 
-				tweenEvent.Completed?.Invoke();
+				tweenHandle.Completed?.Invoke();
 			}
 
 			Profiler.EndSample();

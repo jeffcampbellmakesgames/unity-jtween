@@ -321,11 +321,11 @@ namespace SampleContent
 					tr,
 					360,
 					_duration,
+					RotateMode.Y,
 					SpaceType.World,
 					_easeType,
 					_loopType,
-					_loopCount,
-					RotateMode.Y);
+					_loopCount);
 			}
 
 			yield return _waitWhileTweensComplete;

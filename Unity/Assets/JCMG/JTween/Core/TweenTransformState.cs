@@ -23,6 +23,26 @@ namespace JCMG.JTween
 			return (state & TweenStateType.IsCompleted) == TweenStateType.IsCompleted;
 		}
 
+		public bool HasHandle()
+		{
+			return (state & TweenStateType.HasHandle) == TweenStateType.HasHandle;
+		}
+
+		public bool JustStarted()
+		{
+			return (state & TweenStateType.JustStarted) == TweenStateType.JustStarted;
+		}
+
+		public bool JustEnded()
+		{
+			return (state & TweenStateType.JustEnded) == TweenStateType.JustEnded;
+		}
+
+		public bool RequiresRecycling()
+		{
+			return (state & TweenStateType.RequiresRecycling) == TweenStateType.RequiresRecycling;
+		}
+
 		public bool IsMovementInWorldSpace()
 		{
 			return (spaceType & TweenSpaceType.WorldMovement) == TweenSpaceType.WorldMovement;
