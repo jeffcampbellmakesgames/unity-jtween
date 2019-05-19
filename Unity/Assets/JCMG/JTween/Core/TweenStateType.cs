@@ -8,6 +8,9 @@ namespace JCMG.JTween
 		IsPlaying = 1,
 		IsPaused = 2,
 		IsCompleted = 4,
-		JustStarted = 8
+		RequiresRecycling = 8,
+		HasHandle = 16,
+		JustStarted = 32,
+		JustEnded = 64
 	}
 }

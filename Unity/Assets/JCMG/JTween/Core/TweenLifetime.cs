@@ -8,6 +8,7 @@ namespace JCMG.JTween
 		public float duration;
 		public float current;
 		public short loopCount;
+		public short originalLoopCount;
 		public EaseType easeType;
 		public LoopType loopType;
 		public byte isReversed;
@@ -48,6 +49,13 @@ namespace JCMG.JTween
 		public float GetProgress()
 		{
 			return math.clamp(current / duration, 0f, 1f);
+		}
+
+		public void Restart()
+		{
+			current = 0;
+			loopCount = originalLoopCount;
+			isReversed = FALSE;
 		}
 
 		public static long SizeOf()

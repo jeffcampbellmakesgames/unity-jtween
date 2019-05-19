@@ -9,9 +9,6 @@ namespace JCMG.JTween
 	internal struct ApplyTweenToTransformJob : IJobParallelForTransform
 	{
 		[ReadOnly]
-		public NativeArray<TweenTransformState> tweenStates;
-
-		[ReadOnly]
 		public NativeArray<float3> positions;
 
 		[ReadOnly]
@@ -20,9 +17,23 @@ namespace JCMG.JTween
 		[ReadOnly]
 		public NativeArray<float3> scales;
 
+		public NativeArray<TweenTransformState> tweenStates;
+
 		public void Execute(int i, TransformAccess transform)
 		{
 			var tweenState = tweenStates[i];
+			if (tweenState.IsCompleted() || tweenState.IsPaused())
+			{
+				return;
+			}
+
+			if (tweenState.JustEnded())
+			{
+				tweenState.state &= ~TweenStateType.IsPlaying;
+				tweenState.state |= TweenStateType.IsCompleted;
+				tweenStates[i] = tweenState;
+			}
+
 			if (tweenState.IsMovementEnabled())
 			{
 				if (tweenState.IsMovementInWorldSpace())

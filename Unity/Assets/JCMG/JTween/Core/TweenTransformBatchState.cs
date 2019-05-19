@@ -2,7 +2,7 @@
 
 namespace JCMG.JTween
 {
-	internal struct TweenBatch
+	internal struct TweenTransformBatchState
 	{
 		public uint startIndex;
 		public uint length;
@@ -23,6 +23,26 @@ namespace JCMG.JTween
 			return (state & TweenStateType.IsCompleted) == TweenStateType.IsCompleted;
 		}
 
+		public bool HasHandle()
+		{
+			return (state & TweenStateType.HasHandle) == TweenStateType.HasHandle;
+		}
+
+		public bool JustStarted()
+		{
+			return (state & TweenStateType.JustStarted) == TweenStateType.JustStarted;
+		}
+
+		public bool JustEnded()
+		{
+			return (state & TweenStateType.JustEnded) == TweenStateType.JustEnded;
+		}
+
+		public bool RequiresRecycling()
+		{
+			return (state & TweenStateType.RequiresRecycling) == TweenStateType.RequiresRecycling;
+		}
+
 		public bool IncludesIndex(int index)
 		{
 			return startIndex <= index && startIndex + length > index;
@@ -30,7 +50,7 @@ namespace JCMG.JTween
 
 		public static long SizeOf()
 		{
-			return UnsafeUtility.SizeOf<TweenBatch>();
+			return UnsafeUtility.SizeOf<TweenTransformBatchState>();
 		}
 	}
 }

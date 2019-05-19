@@ -72,9 +72,9 @@ namespace SampleContent
 				_oneFromTargets,
 				_oneToTargets,
 				_duration,
-				easeType:_easeType,
+				easeType: _easeType,
 				loopType: LoopType.PingPong,
-				loopCount:1,
+				loopCount: 1,
 				onComplete: TweenObjectTwo);
 		}
 
