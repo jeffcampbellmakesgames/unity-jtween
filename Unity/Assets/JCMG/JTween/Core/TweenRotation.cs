@@ -20,11 +20,11 @@ namespace JCMG.JTween
 					var currentFrom = isReversed ? to : from;
 					return Quaternion.Lerp(currentFrom, currentTo, ease);
 				case RotateMode.X:
-					return Quaternion.Euler(ease * angle, from.value.y, from.value.z);
+					return Quaternion.Euler((from.value.x + angle * ease) % 360, from.value.y, from.value.z);
 				case RotateMode.Y:
-					return Quaternion.Euler(from.value.x, ease * angle, from.value.z);
+					return Quaternion.Euler(from.value.x, (from.value.y + angle * ease) % 360, from.value.z);
 				case RotateMode.Z:
-					return Quaternion.Euler(from.value.x, from.value.y, ease * angle);
+					return Quaternion.Euler(from.value.x, from.value.y, ease * (from.value.z + angle * ease) % 360);
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
