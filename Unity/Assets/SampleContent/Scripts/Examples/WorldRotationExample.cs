@@ -7,7 +7,7 @@ namespace SampleContent
 	{
 		private void Start()
 		{
-			transform.RotateY(180, 1, EaseType.Linear, LoopType.Restart, -1);
+			transform.RotateY(360f, 2f, EaseType.Linear, LoopType.Restart, -1);
 		}
 
 		#if UNITY_EDITOR

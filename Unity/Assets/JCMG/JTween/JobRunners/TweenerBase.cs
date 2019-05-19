@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace JCMG.JTween
 {
@@ -9,15 +10,18 @@ namespace JCMG.JTween
 		/// <summary>
 		/// An event queue for tween callbacks to notify external subscribers.
 		/// </summary>
-		protected readonly FastList<TweenHandle> _tweenHandleCallbackEventQueue = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		protected readonly Queue<TweenHandle> _tweenHandleCallbackEventQueue
+			= new Queue<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
 		/// <summary>
 		/// An event queue for user actions to manipulate tween data
 		/// </summary>
-		protected readonly FastList<TweenHandle> _tweenHandleActionEventQueue = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		protected readonly Queue<TweenHandleAction> _tweenHandleActionEventQueue
+			= new Queue<TweenHandleAction>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
 		// Pools for external use
-		protected readonly FastList<TweenHandle> _tweenHandlePool = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		protected readonly FastList<TweenHandle> _tweenHandlePool
+			= new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
 		// Internal state
 		protected float _deltaTime;
@@ -40,10 +44,7 @@ namespace JCMG.JTween
 		protected const TweenStateType HANDLE_START_PLAYING =
 			TweenStateType.IsPlaying | TweenStateType.JustStarted | TweenStateType.HasHandle;
 
-		internal void QueueTweenHandleAction(TweenHandle tweenHandle)
-		{
-			_tweenHandleActionEventQueue.Add(tweenHandle);
-		}
+		internal abstract void QueueTweenHandleAction(TweenHandle tweenHandle);
 
 		protected abstract void Teardown();
 		protected abstract void UpdateTweens();
@@ -79,7 +80,7 @@ namespace JCMG.JTween
 			LateUpdateTweens();
 		}
 
-		protected TweenHandle GetNextAvailableTweenAccessor()
+		protected TweenHandle GetNextAvailableTweenHandle()
 		{
 			TweenHandle tweenAccessor;
 			if (_tweenHandlePool.Length > 0)

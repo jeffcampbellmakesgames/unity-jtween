@@ -7,6 +7,7 @@
 		Pause,
 		Stop,
 		Restart,
+		Rewind,
 		Recycle
 	}
 }
