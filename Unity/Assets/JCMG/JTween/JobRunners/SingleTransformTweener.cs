@@ -349,6 +349,7 @@ namespace JCMG.JTween
 								tweenState.state &= ~TweenStateType.IsPlaying;
 								tweenState.state &= ~TweenStateType.IsPaused;
 								tweenState.state |= TweenStateType.IsCompleted;
+								tweenState.state |= TweenStateType.JustEnded;
 							}
 							break;
 						case TweenHandleActionType.Recycle:

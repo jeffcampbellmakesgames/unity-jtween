@@ -503,6 +503,7 @@ namespace JCMG.JTween
 								tweenBatch.state &= ~TweenStateType.IsPlaying;
 								tweenBatch.state &= ~TweenStateType.IsPaused;
 								tweenBatch.state |= TweenStateType.IsCompleted;
+								tweenBatch.state |= TweenStateType.JustEnded;
 							}
 							break;
 						case TweenHandleActionType.Recycle:
