@@ -25,6 +25,9 @@ namespace SampleContent
 		private Button _restartButton;
 
 		[SerializeField]
+		private Button _rewindButton;
+
+		[SerializeField]
 		private Button _stopButton;
 
 		[SerializeField]
@@ -38,6 +41,7 @@ namespace SampleContent
 			_playButton.onClick.AddListener(OnPlayButtonClicked);
 			_pauseButton.onClick.AddListener(OnPauseButtonClicked);
 			_restartButton.onClick.AddListener(OnRestartButtonClicked);
+			_rewindButton.onClick.AddListener(OnRewindButtonClicked);
 			_stopButton.onClick.AddListener(OnStopButtonClicked);
 			_recycleButton.onClick.AddListener(OnRecycleButtonClicked);
 
@@ -87,6 +91,18 @@ namespace SampleContent
 			else
 			{
 				Debug.Log("Tween needs to be created first via Play button before trying to restart it.");
+			}
+		}
+
+		private void OnRewindButtonClicked()
+		{
+			if (_tweenHandle != null)
+			{
+				_tweenHandle.Rewind();
+			}
+			else
+			{
+				Debug.Log("Tween needs to be created first via Play button before trying to rewind it.");
 			}
 		}
 

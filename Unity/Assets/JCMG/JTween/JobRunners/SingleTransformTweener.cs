@@ -8,7 +8,7 @@ namespace JCMG.JTween
 	internal sealed class SingleTransformTweener : TransformTweenerBase
 	{
 		// Managed lists of tween data
-		private readonly FastList<TweenHandle> _tweenAccessors = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		private readonly FastList<TweenHandle> _tweenHandles = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
 		public void Move(
 			Transform target,
@@ -52,28 +52,29 @@ namespace JCMG.JTween
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
 			{
-				var tweenAccessor = GetNextAvailableTweenAccessor();
+				var availableTweenHandle = GetNextAvailableTweenHandle();
+				availableTweenHandle.state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START;
 				if (onStart != null)
 				{
-					tweenAccessor.AddOnStartedListener(onStart);
+					availableTweenHandle.AddOnStartedListener(onStart);
 				}
 
 				if (onComplete != null)
 				{
-					tweenAccessor.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompetedListener(onComplete);
 				}
 
-				_tweenAccessors.Add(tweenAccessor);
+				_tweenHandles.Add(availableTweenHandle);
 
 				// Only populate the out parameter if explicitly called out for.
 				if (useTweenHandle)
 				{
-					tweenHandle = tweenAccessor;
+					tweenHandle = availableTweenHandle;
 				}
 			}
 			else
 			{
-				_tweenAccessors.Add(null);
+				_tweenHandles.Add(null);
 			}
 		}
 
@@ -115,28 +116,29 @@ namespace JCMG.JTween
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
 			{
-				var tweenAccessor = GetNextAvailableTweenAccessor();
+				var availableTweenHandle = GetNextAvailableTweenHandle();
+				availableTweenHandle.state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START;
 				if (onStart != null)
 				{
-					tweenAccessor.AddOnStartedListener(onStart);
+					availableTweenHandle.AddOnStartedListener(onStart);
 				}
 
 				if (onComplete != null)
 				{
-					tweenAccessor.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompetedListener(onComplete);
 				}
 
-				_tweenAccessors.Add(tweenAccessor);
+				_tweenHandles.Add(availableTweenHandle);
 
 				// Only populate the out parameter if explicitly called out for.
 				if (useTweenHandle)
 				{
-					tweenHandle = tweenAccessor;
+					tweenHandle = availableTweenHandle;
 				}
 			}
 			else
 			{
-				_tweenAccessors.Add(null);
+				_tweenHandles.Add(null);
 			}
 		}
 
@@ -186,28 +188,29 @@ namespace JCMG.JTween
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
 			{
-				var tweenAccessor = GetNextAvailableTweenAccessor();
+				var availableTweenHandle = GetNextAvailableTweenHandle();
+				availableTweenHandle.state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START;
 				if (onStart != null)
 				{
-					tweenAccessor.AddOnStartedListener(onStart);
+					availableTweenHandle.AddOnStartedListener(onStart);
 				}
 
 				if (onComplete != null)
 				{
-					tweenAccessor.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompetedListener(onComplete);
 				}
 
-				_tweenAccessors.Add(tweenAccessor);
+				_tweenHandles.Add(availableTweenHandle);
 
 				// Only populate the out parameter if explicitly called out for.
 				if (useTweenHandle)
 				{
-					tweenHandle = tweenAccessor;
+					tweenHandle = availableTweenHandle;
 				}
 			}
 			else
 			{
-				_tweenAccessors.Add(null);
+				_tweenHandles.Add(null);
 			}
 		}
 
@@ -263,28 +266,46 @@ namespace JCMG.JTween
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
 			{
-				var tweenAccessor = GetNextAvailableTweenAccessor();
+				var availableTweenHandle = GetNextAvailableTweenHandle();
+				availableTweenHandle.state = useTweenHandle ? HANDLE_START_PAUSED : NO_HANDLE_START;
 				if (onStart != null)
 				{
-					tweenAccessor.AddOnStartedListener(onStart);
+					availableTweenHandle.AddOnStartedListener(onStart);
 				}
 
 				if (onComplete != null)
 				{
-					tweenAccessor.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompetedListener(onComplete);
 				}
 
-				_tweenAccessors.Add(tweenAccessor);
+				_tweenHandles.Add(availableTweenHandle);
 
 				// Only populate the out parameter if explicitly called out for.
 				if (useTweenHandle)
 				{
-					tweenHandle = tweenAccessor;
+					tweenHandle = availableTweenHandle;
 				}
 			}
 			else
 			{
-				_tweenAccessors.Add(null);
+				_tweenHandles.Add(null);
+			}
+		}
+
+		internal override void QueueTweenHandleAction(TweenHandle tweenHandle)
+		{
+			var index = _tweenHandles.IndexOf(tweenHandle);
+			if (index >= 0)
+			{
+				_tweenHandleActionEventQueue.Enqueue(new TweenHandleAction
+				{
+					actionType = tweenHandle.actionType,
+					index = index
+				});
+			}
+			else
+			{
+				Debug.LogWarning(RuntimeConstants.HANDLE_NOT_FOUND);
 			}
 		}
 
@@ -299,14 +320,14 @@ namespace JCMG.JTween
 				return;
 			}
 
-			while (_tweenHandleActionEventQueue.Length > 0)
+			while (_tweenHandleActionEventQueue.Count > 0)
 			{
-				var tweenHandle = _tweenHandleActionEventQueue.PopLast();
-				var index = _tweenAccessors.IndexOf(tweenHandle);
-				if (index >= 0)
+				var tweenHandleAction = _tweenHandleActionEventQueue.Dequeue();
+				if (tweenHandleAction.index >= 0 && tweenHandleAction.index < _tweenHandles.Length)
 				{
-					var tweenState = _tweenStates.buffer[index];
-					switch (tweenHandle.actionType)
+					var tweenHandle = _tweenHandles.buffer[tweenHandleAction.index];
+					var tweenState = _tweenStates.buffer[tweenHandleAction.index];
+					switch (tweenHandleAction.actionType)
 					{
 						case TweenHandleActionType.Play:
 							if (!tweenState.IsCompleted() && tweenState.IsPaused())
@@ -328,6 +349,7 @@ namespace JCMG.JTween
 								tweenState.state &= ~TweenStateType.IsPlaying;
 								tweenState.state &= ~TweenStateType.IsPaused;
 								tweenState.state |= TweenStateType.IsCompleted;
+								tweenState.state |= TweenStateType.JustEnded;
 							}
 							break;
 						case TweenHandleActionType.Recycle:
@@ -337,25 +359,22 @@ namespace JCMG.JTween
 							tweenState.state |= TweenStateType.IsCompleted;
 							tweenState.state |= TweenStateType.RequiresRecycling;
 							break;
+						case TweenHandleActionType.Rewind:
+							tweenState.state = HANDLE_START_PAUSED;
+							RewindTransformLifetimes(tweenHandleAction.index);
+							break;
 						case TweenHandleActionType.Restart:
 							tweenState.state = HANDLE_START_PLAYING;
-							var tweenPosLifetime = _tweenPositionLifetimes.buffer[index];
-							tweenPosLifetime.Restart();
-							_tweenPositionLifetimes.buffer[index] = tweenPosLifetime;
-
-							var tweenRotLifetime = _tweenRotationLifetimes.buffer[index];
-							tweenRotLifetime.Restart();
-							_tweenRotationLifetimes.buffer[index] = tweenRotLifetime;
-
-							var tweenScaleLifetime = _tweenScaleLifetimes.buffer[index];
-							tweenScaleLifetime.Restart();
-							_tweenScaleLifetimes.buffer[index] = tweenScaleLifetime;
+							RewindTransformLifetimes(tweenHandleAction.index);
 							break;
 						case TweenHandleActionType.None:
 						default:
 							throw new NotImplementedException();
 					}
-					_tweenStates.buffer[index] = tweenState;
+
+					tweenHandle.state = tweenState.state;
+
+					_tweenStates.buffer[tweenHandleAction.index] = tweenState;
 				}
 				else
 				{
@@ -367,14 +386,15 @@ namespace JCMG.JTween
 			for (var i = 0; i < _tweenStates.Length; i++)
 			{
 				var tweenState = _tweenStates.buffer[i];
-				if (tweenState.JustStarted())
+				if (tweenState.IsPlaying() && tweenState.JustStarted())
 				{
 					tweenState.state &= ~TweenStateType.JustStarted;
 					_tweenStates.buffer[i] = tweenState;
 
-					if (_tweenAccessors.buffer[i] != null)
+					if (_tweenHandles.buffer[i] != null)
 					{
-						_tweenHandleCallbackEventQueue.Add(_tweenAccessors.buffer[i]);
+						_tweenHandles.buffer[i].state = tweenState.state;
+						_tweenHandleCallbackEventQueue.Enqueue(_tweenHandles.buffer[i]);
 					}
 				}
 			}
@@ -390,11 +410,11 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_STARTED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all started events
-			for (var i = _tweenHandleCallbackEventQueue.Length - 1; i >= 0; i--)
+			for (var i = _tweenHandleCallbackEventQueue.Count - 1; i >= 0; i--)
 			{
 				// Pop the latest element so that if a downstream error occurs we do not repeat it
 				// endlessly and block the queue.
-				var tweenEvent = _tweenHandleCallbackEventQueue.PopLast();
+				var tweenEvent = _tweenHandleCallbackEventQueue.Dequeue();
 
 				tweenEvent.Started?.Invoke();
 			}
@@ -425,6 +445,11 @@ namespace JCMG.JTween
 			{
 				var tweenState = _tweenStates.buffer[i];
 
+				if (_tweenHandles.buffer[i] != null)
+				{
+					_tweenHandles.buffer[i].state = tweenState.state;
+				}
+
 				if (tweenState.IsCompleted())
 				{
 					if (tweenState.JustEnded())
@@ -432,9 +457,10 @@ namespace JCMG.JTween
 						tweenState.state &= ~TweenStateType.JustEnded;
 						_tweenStates.buffer[i] = tweenState;
 
-						if (_tweenAccessors.buffer[i] != null)
+						if (_tweenHandles.buffer[i] != null)
 						{
-							_tweenHandleCallbackEventQueue.Add(_tweenAccessors.buffer[i]);
+							_tweenHandles.buffer[i].state = tweenState.state;
+							_tweenHandleCallbackEventQueue.Enqueue(_tweenHandles.buffer[i]);
 						}
 					}
 
@@ -453,7 +479,7 @@ namespace JCMG.JTween
 						_tweenPositionLifetimes.RemoveAt(i);
 						_tweenRotationLifetimes.RemoveAt(i);
 						_tweenScaleLifetimes.RemoveAt(i);
-						_tweenAccessors.RemoveAt(i);
+						_tweenHandles.RemoveAt(i);
 						Profiler.EndSample();
 					}
 				}
@@ -467,17 +493,32 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_COMPLETED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all completed events
-			for (var i = _tweenHandleCallbackEventQueue.Length - 1; i >= 0; i--)
+			for (var i = _tweenHandleCallbackEventQueue.Count - 1; i >= 0; i--)
 			{
 				// Pop the latest element so that if a downstream error occurs we do not repeat it
 				// endlessly and block the queue.
-				var tweenHandle = _tweenHandleCallbackEventQueue.PopLast();
+				var tweenHandle = _tweenHandleCallbackEventQueue.Dequeue();
 				_tweenHandlePool.Add(tweenHandle);
 
 				tweenHandle.Completed?.Invoke();
 			}
 
 			Profiler.EndSample();
+		}
+
+		private void RewindTransformLifetimes(int index)
+		{
+			var tweenPosLifetime = _tweenPositionLifetimes.buffer[index];
+			tweenPosLifetime.Restart();
+			_tweenPositionLifetimes.buffer[index] = tweenPosLifetime;
+
+			var tweenRotLifetime = _tweenRotationLifetimes.buffer[index];
+			tweenRotLifetime.Restart();
+			_tweenRotationLifetimes.buffer[index] = tweenRotLifetime;
+
+			var tweenScaleLifetime = _tweenScaleLifetimes.buffer[index];
+			tweenScaleLifetime.Restart();
+			_tweenScaleLifetimes.buffer[index] = tweenScaleLifetime;
 		}
 	}
 }
