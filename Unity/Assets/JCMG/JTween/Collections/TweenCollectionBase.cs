@@ -31,7 +31,7 @@ namespace JCMG.JTween
 		public abstract void Rewind();
 		public abstract void Recycle();
 
-		public void Clear()
+		public virtual void Clear()
 		{
 			Recycle();
 

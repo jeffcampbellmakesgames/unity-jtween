@@ -1,4 +1,6 @@
-﻿namespace JCMG.JTween
+﻿using System;
+
+namespace JCMG.JTween
 {
 	internal sealed class TweenSequence : TweenCollectionBase, ITweenSequence
 	{
@@ -6,11 +8,25 @@
 
 		private TweenHandle _currentTweenHandle;
 
+		private Action _onStep;
+
 		public override void Add(ITweenHandle tweenHandle)
 		{
 			tweenHandle.AddOnCompetedListener(OnTweenCompleted);
 
 			_tweenList.Add((TweenHandle)tweenHandle);
+		}
+
+		public void AddOnStep(Action onStep)
+		{
+			_onStep += onStep;
+		}
+
+		public override void Clear()
+		{
+			base.Clear();
+
+			_onStep = null;
 		}
 
 		public override void Play()
@@ -99,6 +115,8 @@
 			{
 				_currentTweenHandle = _tweenList[_index++];
 				_currentTweenHandle.Play();
+
+				_onStep?.Invoke();
 			}
 		}
 	}

@@ -1,7 +1,9 @@
-﻿namespace JCMG.JTween
+﻿using System;
+
+namespace JCMG.JTween
 {
 	public interface ITweenSequence : ITweenCollection
 	{
-
+		void AddOnStep(Action onStep);
 	}
 }
