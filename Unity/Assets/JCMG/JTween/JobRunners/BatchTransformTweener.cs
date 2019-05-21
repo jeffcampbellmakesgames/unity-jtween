@@ -445,7 +445,7 @@ namespace JCMG.JTween
 			}
 			else
 			{
-				Debug.LogWarning(RuntimeConstants.HANDLE_NOT_FOUND);
+				Debug.LogWarning(RuntimeConstants.HANDLE_BATCH_NOT_FOUND);
 			}
 		}
 
@@ -563,7 +563,7 @@ namespace JCMG.JTween
 				}
 				else
 				{
-					Debug.LogWarning(RuntimeConstants.HANDLE_NOT_FOUND);
+					Debug.LogWarning(RuntimeConstants.HANDLE_BATCH_NOT_FOUND);
 				}
 			}
 
