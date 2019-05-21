@@ -60,11 +60,11 @@ namespace JCMG.JTween
 			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
-				duration = duration,
+				duration = Mathf.Max(0, duration),
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount,
-				originalLoopCount = (short)loopCount
+				loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+				originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 			});
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
@@ -78,7 +78,7 @@ namespace JCMG.JTween
 
 				if (onComplete != null)
 				{
-					availableTweenHandle.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompletedListener(onComplete);
 				}
 
 				_tweenBatchHandles.Add(availableTweenHandle);
@@ -113,11 +113,11 @@ namespace JCMG.JTween
 				_tweenScales.Add(new TweenFloat3());
 				_tweenPositionLifetimes.Add(new TweenLifetime
 				{
-					duration = duration,
+					duration = Mathf.Max(0, duration),
 					easeType = easeType,
 					loopType = loopType,
-					loopCount = (short)loopCount,
-					originalLoopCount = (short)loopCount
+					loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+					originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 				});
 				_tweenRotationLifetimes.Add(new TweenLifetime());
 				_tweenScaleLifetimes.Add(new TweenLifetime());
@@ -159,11 +159,11 @@ namespace JCMG.JTween
 			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
-				duration = duration,
+				duration = Mathf.Max(0, duration),
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount,
-				originalLoopCount = (short)loopCount
+				loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+				originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 			});
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
@@ -177,7 +177,7 @@ namespace JCMG.JTween
 
 				if (onComplete != null)
 				{
-					availableTweenHandle.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompletedListener(onComplete);
 				}
 
 				_tweenBatchHandles.Add(availableTweenHandle);
@@ -211,11 +211,11 @@ namespace JCMG.JTween
 				_tweenRotationLifetimes.Add(new TweenLifetime());
 				_tweenScaleLifetimes.Add(new TweenLifetime
 				{
-					duration = duration,
+					duration = Mathf.Max(0, duration),
 					easeType = easeType,
 					loopType = loopType,
-					loopCount = (short)loopCount,
-					originalLoopCount = (short)loopCount
+					loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+					originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 				});
 			}
 		}
@@ -256,11 +256,11 @@ namespace JCMG.JTween
 			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
-				duration = duration,
+				duration = Mathf.Max(0, duration),
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount,
-				originalLoopCount = (short)loopCount
+				loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+				originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 			});
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
@@ -274,7 +274,7 @@ namespace JCMG.JTween
 
 				if (onComplete != null)
 				{
-					availableTweenHandle.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompletedListener(onComplete);
 				}
 
 				_tweenBatchHandles.Add(availableTweenHandle);
@@ -310,11 +310,11 @@ namespace JCMG.JTween
 				_tweenPositionLifetimes.Add(new TweenLifetime());
 				_tweenRotationLifetimes.Add(new TweenLifetime
 				{
-					duration = duration,
+					duration = Mathf.Max(0, duration),
 					easeType = easeType,
 					loopType = loopType,
-					loopCount = (short)loopCount,
-					originalLoopCount = (short)loopCount
+					loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+					originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 				});
 				_tweenScaleLifetimes.Add(new TweenLifetime());
 			}
@@ -364,11 +364,11 @@ namespace JCMG.JTween
 			});
 			_tweenBatchLifetimes.Add(new TweenLifetime
 			{
-				duration = duration,
+				duration = Mathf.Max(0, duration),
 				easeType = easeType,
 				loopType = loopType,
-				loopCount = (short)loopCount,
-				originalLoopCount = (short)loopCount
+				loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+				originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 			});
 			var hasEvents = onStart != null || onComplete != null;
 			if (useTweenHandle || hasEvents)
@@ -382,7 +382,7 @@ namespace JCMG.JTween
 
 				if (onComplete != null)
 				{
-					availableTweenHandle.AddOnCompetedListener(onComplete);
+					availableTweenHandle.AddOnCompletedListener(onComplete);
 				}
 
 				_tweenBatchHandles.Add(availableTweenHandle);
@@ -420,11 +420,11 @@ namespace JCMG.JTween
 
 				var lifetime = new TweenLifetime
 				{
-					duration = duration,
+					duration = Mathf.Max(0, duration),
 					easeType = easeType,
 					loopType = loopType,
-					loopCount = (short)loopCount,
-					originalLoopCount = (short)loopCount
+					loopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue),
+					originalLoopCount = (short)Mathf.Clamp(loopCount, -1, short.MaxValue)
 				};
 				_tweenPositionLifetimes.Add(lifetime);
 				_tweenRotationLifetimes.Add(lifetime);
