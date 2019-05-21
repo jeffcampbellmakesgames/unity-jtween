@@ -2,6 +2,9 @@
 
 namespace JCMG.JTween
 {
+	/// <summary>
+	/// The type of easing to use for a given tween.
+	/// </summary>
 	[Serializable]
 	public enum EaseType : byte
 	{
