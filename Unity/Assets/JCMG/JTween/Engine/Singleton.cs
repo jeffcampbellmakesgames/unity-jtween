@@ -2,12 +2,19 @@
 
 namespace JCMG.JTween
 {
+	/// <summary>
+	/// A basic scene Singleton implementation.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public abstract class Singleton<T> : MonoBehaviour where T : Component
 	{
 		private static bool _applicationIsQuitting;
 
 		private static T _instance;
 
+		/// <summary>
+		/// Returns the global <typeparamref name="T" /> instance.
+		/// </summary>
 		public static T Instance
 		{
 			get
@@ -28,6 +35,9 @@ namespace JCMG.JTween
 			}
 		}
 
+		/// <summary>
+		/// Returns true if the <typeparam name="T"></typeparam> instance exists, otherwise false.
+		/// </summary>
 		public static bool Exists
 		{
 			get { return _instance != null; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Profiling;
 
 namespace JCMG.JTween
@@ -228,6 +229,8 @@ namespace JCMG.JTween
 			bool useTweenHandle,
 			out ITweenHandle tweenHandle)
 		{
+			Assert.IsFalse(rotateMode != RotateMode.XYZ, RuntimeConstants.INVALID_ROTATE_MODE);
+
 			tweenHandle = null;
 
 			_transforms.Add(target);
