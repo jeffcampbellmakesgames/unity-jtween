@@ -146,7 +146,7 @@ namespace SampleContent
 			{
 				var numberOfItemsRemaining = trs.Length - currentCount;
 				var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
-				JTweenControl.Instance.BatchMove(
+				JTweenControl.Instance.BatchMoveSlice(
 					trs,
 					_from,
 					_to,
@@ -219,7 +219,7 @@ namespace SampleContent
 					var numberOfItemsRemaining = trs.Length - i;
 					var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
 
-					JTweenControl.Instance.BatchMove(
+					JTweenControl.Instance.BatchMoveSlice(
 						trs,
 						_from,
 						_to,
