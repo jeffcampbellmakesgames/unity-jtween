@@ -1,16 +1,15 @@
 {
-	"name": "SampleContent",
-	"references": [
-		"GUID:842bf62986bbf2f4591cfd1f62569744",
-		"GUID:b07cbdb6d541daf479cb59443edf7bc7"
-	],
-	"optionalUnityReferences": [],
-	"includePlatforms": [],
-	"excludePlatforms": [],
-	"allowUnsafeCode": false,
-	"overrideReferences": false,
-	"precompiledReferences": [],
-	"autoReferenced": true,
-	"defineConstraints": [],
-	"versionDefines": []
+    "name": "SampleContent",
+    "references": [
+        "GUID:842bf62986bbf2f4591cfd1f62569744"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }

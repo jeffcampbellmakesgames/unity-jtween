@@ -12,7 +12,7 @@ namespace JCMG.JTween
 
 		public override void Add(ITweenHandle tweenHandle)
 		{
-			tweenHandle.AddOnCompetedListener(OnTweenCompleted);
+			tweenHandle.AddOnCompletedListener(OnTweenCompleted);
 
 			_tweenList.Add((TweenHandle)tweenHandle);
 		}
@@ -107,6 +107,11 @@ namespace JCMG.JTween
 
 		private void OnTweenCompleted()
 		{
+			if (_tweenList.Count == 0)
+			{
+				return;
+			}
+
 			if (_index > _tweenList.Count - 1)
 			{
 				_onComplete?.Invoke();

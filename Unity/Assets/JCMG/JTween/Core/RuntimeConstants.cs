@@ -9,5 +9,8 @@
 
 		public const string HANDLE_BATCH_NOT_FOUND =
 			"[JTween] Tween Batch not found for this handle, please remove local reference";
+
+		public const string INVALID_ROTATE_MODE =
+			"[JTween] RotateMode.XYZ should not be used when rotating on a single axis.";
 	}
 }

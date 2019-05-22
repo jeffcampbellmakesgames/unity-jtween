@@ -95,7 +95,7 @@ namespace JCMG.JTween
 			Started += onStart;
 		}
 
-		public void AddOnCompetedListener(Action onCompleted)
+		public void AddOnCompletedListener(Action onCompleted)
 		{
 			Completed += onCompleted;
 		}

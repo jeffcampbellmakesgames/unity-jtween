@@ -61,7 +61,7 @@ namespace SampleContent
 					EaseType.BounceOut);
 
 				_tweenHandle.AddOnStartedListener(OnTweenStarted);
-				_tweenHandle.AddOnCompetedListener(OnTweenCompleted);
+				_tweenHandle.AddOnCompletedListener(OnTweenCompleted);
 				_tweenHandle.Play();
 			}
 			else

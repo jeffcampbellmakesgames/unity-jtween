@@ -6,7 +6,7 @@ namespace JCMG.JTween
 		public override void Add(ITweenHandle tweenHandle)
 		{
 			tweenHandle.AddOnStartedListener(OnTweenStarted);
-			tweenHandle.AddOnCompetedListener(OnTweenCompleted);
+			tweenHandle.AddOnCompletedListener(OnTweenCompleted);
 
 			_tweenList.Add((TweenHandle)tweenHandle);
 		}

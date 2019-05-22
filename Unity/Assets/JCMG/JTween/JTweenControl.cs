@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace JCMG.JTween
 {
+	/// <summary>
+	/// The global instance for JTween to interact with tweens, tween systems.
+	/// </summary>
 	[RequireComponent(
 		typeof(SingleTransformTweener),
 		typeof(BatchTransformTweener))]
@@ -19,8 +22,22 @@ namespace JCMG.JTween
 		{
 			base.Awake();
 
-			_singleTransformTweener = GetComponent<SingleTransformTweener>();
-			_batchTransformTweener = GetComponent<BatchTransformTweener>();
+			EnsureDependencies();
 		}
+
+		private void EnsureDependencies()
+		{
+			_singleTransformTweener = gameObject.FindOrCreate<SingleTransformTweener>();
+			_batchTransformTweener = gameObject.FindOrCreate<BatchTransformTweener>();
+		}
+
+		#if UNITY_EDITOR
+
+		private void OnValidate()
+		{
+			EnsureDependencies();
+		}
+
+		#endif
 	}
 }
