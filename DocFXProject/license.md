@@ -1,31 +1,30 @@
-# License
 Copyright (c) 2019 Jeff Campbell
 
-## Non-legalese summary
+# Non-legalese summary
 * You can freely use JTween in both commercial and non-commercial projects.
 * You can modify the code only for your own use and you cannot redistribute modified versions.
 * JTween was/is hard work: please respect the copyright.
 
-## Definitions
-### Copyright Holder
+# Definitions
+## Copyright Holder
 Jeff Campbell
 
-### You/Your
+## You/Your
 Means any person who would like to copy, distribute, or modify the Package.
 
-### Package
+## Package
 Means the collection of files distributed by the Copyright Holder, and derivatives of that collection and/or of those files. A given Package may consist of either the Standard Version, or a Modified Version.
 
-### Distribute
+## Distribute
 Means providing a copy of the Package or making it accessible to anyone else, or in the case of a company or organization, to others outside of your company or organization.
 
-### Standard Version
+## Standard Version
 Refers to the Package if it has not been modified, or has been modified only in ways explicitly requested by the Copyright Holder.
 
-### Modified Version
+## Modified Version
 Means the Package, if it has been changed, and such changes were not explicitly requested by the Copyright Holder.
 
-## License
+# License
 You are permitted to use the Standard Version and create and use Modified Versions for any purpose without restriction, provided that you do not Distribute the Modified Version.
 
 You may Distribute verbatim copies of the Source form of the Standard Version of this Package in any medium without restriction, either gratis or for a Distributor Fee, provided that you duplicate all of the original copyright notices and associated disclaimers and also include the original readme.txt file. At your discretion, such verbatim copies may or may not include a Compiled form of the Package.
