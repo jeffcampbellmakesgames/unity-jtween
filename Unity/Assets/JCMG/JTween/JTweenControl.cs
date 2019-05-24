@@ -6,6 +6,7 @@ namespace JCMG.JTween
 	/// <summary>
 	/// The global instance for JTween to interact with tweens, tween systems.
 	/// </summary>
+	[AddComponentMenu("JCMG/JTween/JTweenControl")]
 	[RequireComponent(
 		typeof(SingleTransformTweener),
 		typeof(BatchTransformTweener))]
@@ -25,7 +26,7 @@ namespace JCMG.JTween
 			EnsureDependencies();
 		}
 
-		private void EnsureDependencies()
+		internal void EnsureDependencies()
 		{
 			_singleTransformTweener = gameObject.FindOrCreate<SingleTransformTweener>();
 			_batchTransformTweener = gameObject.FindOrCreate<BatchTransformTweener>();

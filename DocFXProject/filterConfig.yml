@@ -1,0 +1,22 @@
+apiRules:
+- exclude:
+    uidRegex: ^System
+    type: Type
+- exclude:
+    uidRegex: ^UnityEngine
+    type: Type
+- exclude:
+    uidRegex: ^Unity\.Mathematics
+    type: Type
+- exclude:
+    uidRegex: ^Unity\.Jobs
+    type: Type
+- exclude:
+    uidRegex: ^Unity\.Burst
+    type: Type
+- exclude:
+    uidRegex: ^Unity\.Collections
+    type: Type
+- exclude:
+    uidRegex: ^SampleContent
+    type: Type

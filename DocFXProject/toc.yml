@@ -1,0 +1,12 @@
+- name: API Documentation
+  href: api/
+  homepage: api/index.md
+
+- name: Usage
+  href: usage.md
+
+- name: Contribute
+  href: contributing.md
+
+- name: License
+  href: license.md
