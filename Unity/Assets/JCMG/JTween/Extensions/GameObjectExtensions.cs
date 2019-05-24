@@ -2,7 +2,7 @@
 
 namespace JCMG.JTween
 {
-	public static class GameObjectExtensions
+	internal static class GameObjectExtensions
 	{
 		/// <summary>
 		/// Finds or creates <typeparamref name="T"/> component instance on this <see cref="GameObject"/>
