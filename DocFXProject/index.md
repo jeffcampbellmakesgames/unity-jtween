@@ -6,7 +6,7 @@ JTween is a data-driven, job-based tweening library. It places a focus on perfor
 <img src="./images/fun_example_02.gif" alt="Example 01" height="180" width="320">
 <img src="./images/fun_example_04.gif" alt="Example 02" height="180" width="320">
 
-## Importing JCMG JTween
+## Importing JTween
 Using this library in your project can be done in two ways:
 * **Releases:** The latest release can be found [here](https://github.com/jeffcampbellmakesgames/unity-jtween/releases) as a UnityPackage file that can be downloaded and imported directly into your project's Assets folder.
 * **Package:** Using the native Unity Package Manager, you can add this library as a package by modifying your `manifest.json` file found at `/ProjectName/Packages/manifest.json` to include it as a dependency. See the example below on how to reference it.
