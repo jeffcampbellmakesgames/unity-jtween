@@ -229,7 +229,7 @@ namespace JCMG.JTween
 			bool useTweenHandle,
 			out ITweenHandle tweenHandle)
 		{
-			Assert.IsFalse(rotateMode != RotateMode.XYZ, RuntimeConstants.INVALID_ROTATE_MODE);
+			Assert.IsTrue(rotateMode != RotateMode.XYZ, RuntimeConstants.INVALID_ROTATE_MODE);
 
 			tweenHandle = null;
 
