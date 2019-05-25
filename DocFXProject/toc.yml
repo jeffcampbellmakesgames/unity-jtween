@@ -1,12 +1,18 @@
-- name: API Documentation
-  href: api/
-  homepage: api/index.md
+- name: Getting Started
+  href: getting_started.md
 
 - name: Usage
   href: usage.md
 
+- name: API Documentation
+  href: api/
+  homepage: api/index.md
+
 - name: Contribute
   href: contributing.md
+
+- name: Credits
+  href: credits.md
 
 - name: License
   href: license.md

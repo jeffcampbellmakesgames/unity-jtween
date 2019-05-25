@@ -1,5 +1,4 @@
 # Overview
-
 Using JTween should be a straightforward experience if you've ever used similar tween libraries for Unity, despite the complex underlying implementation. The biggest difference which I'll cover in more detail below is that this library de-emphasizes returning any kind of OOP access to the tween itself; for the most part when tweens are created they automaticaly begin playing and will clean themselves up automatically once completed. It is stil possible however to get a reference object to the tween itself in the form of an `ITweenHandle` which allows for more standard user-control over the tween itself; this comes with the responsibility over its lifecycle and requires user action when the tween is no longer needed.
 
 ## Adding JTweenControl
