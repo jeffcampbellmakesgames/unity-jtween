@@ -612,12 +612,9 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_STARTED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all started events
-			for (var i = _tweenHandleCallbackEventQueue.Count - 1; i >= 0; i--)
+			while(_tweenHandleCallbackEventQueue.Count > 0)
 			{
-				// Pop the latest element so that if a downstream error occurs we do not repeat it
-				// endlessly and block the queue.
 				var tweenEvent = _tweenHandleCallbackEventQueue.Dequeue();
-
 				tweenEvent.Started?.Invoke();
 			}
 
@@ -724,12 +721,10 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_COMPLETED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all completed events
-			for (var i = _tweenHandleCallbackEventQueue.Count - 1; i >= 0; i--)
+			while(_tweenHandleCallbackEventQueue.Count > 0)
 			{
-				// Pop the latest element so that if a downstream error occurs we do not repeat it
-				// endlessly and block the queue.
 				var tweenHandle = _tweenHandleCallbackEventQueue.Dequeue();
-				_tweenHandlePool.Add(tweenHandle);
+				_tweenHandlePool.AddLast(tweenHandle);
 
 				tweenHandle.Completed?.Invoke();
 			}

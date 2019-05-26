@@ -20,8 +20,7 @@ namespace JCMG.JTween
 			= new Queue<TweenHandleAction>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
 		// Pools for external use
-		protected readonly FastList<TweenHandle> _tweenHandlePool
-			= new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		protected readonly LinkedList<TweenHandle> _tweenHandlePool = new LinkedList<TweenHandle>();
 
 		// Internal state
 		protected float _deltaTime;
@@ -57,9 +56,10 @@ namespace JCMG.JTween
 
 		protected virtual void Setup()
 		{
-			for (var i = 0; i < _tweenHandlePool.Capacity; i++)
+			// Create a tween handle per instance of tween capacity
+			for (var i = 0; i < RuntimeConstants.DEFAULT_FAST_LIST_SIZE; i++)
 			{
-				_tweenHandlePool.Add(new TweenHandle(this));
+				_tweenHandlePool.AddLast(new TweenHandle(this));
 			}
 		}
 
@@ -83,10 +83,12 @@ namespace JCMG.JTween
 		protected TweenHandle GetNextAvailableTweenHandle()
 		{
 			TweenHandle tweenAccessor;
-			if (_tweenHandlePool.Length > 0)
+			if (_tweenHandlePool.Count > 0)
 			{
-				tweenAccessor = _tweenHandlePool.PopLast();
+				tweenAccessor = _tweenHandlePool.First.Value;
 				tweenAccessor.Reset();
+
+				_tweenHandlePool.RemoveFirst();
 			}
 			else
 			{

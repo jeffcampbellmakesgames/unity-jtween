@@ -201,7 +201,7 @@ namespace JCMG.JTween
 			Assert.IsNotNull(buffer);
 			Assert.IsFalse(index + length > buffer.Length);
 
-			var copyLength = _length - length;
+			var copyLength = _length - (index + length);
 			Array.Copy(buffer, index + length, buffer, index, copyLength);
 			_length -= length;
 		}

@@ -19,7 +19,7 @@ namespace JCMG.JTween
 
 		public void Update(float deltaTime)
 		{
-			current = math.clamp(current + deltaTime, 0, duration);
+			current = math.min(current + deltaTime, duration);
 			if (loopType == LoopType.None || GetProgress() < 1)
 			{
 				return;
@@ -48,7 +48,12 @@ namespace JCMG.JTween
 
 		public float GetProgress()
 		{
-			return math.clamp(current / duration, 0f, 1f);
+			if (FastApproximately(current, 0, 0.00001f))
+			{
+				return 0f;
+			}
+
+			return math.min(current / duration, 1f);
 		}
 
 		public void Restart()
@@ -427,6 +432,16 @@ namespace JCMG.JTween
 		private static float EaseInOutSinusoidal(float t, float d)
 		{
 			return -0.5f * ( math.cos(math.PI * t / d) - 1 );
+		}
+
+		public static bool FastApproximately(float a, float b, float threshold)
+		{
+			return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
+		}
+
+		public static bool FastApproximately(float a, float b)
+		{
+			return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= 0.00001f;
 		}
 	}
 }
