@@ -1,0 +1,15 @@
+{
+    "name": "SampleContent",
+    "references": [
+        "GUID:842bf62986bbf2f4591cfd1f62569744"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
