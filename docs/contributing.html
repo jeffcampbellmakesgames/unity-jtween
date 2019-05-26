@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Project structure | JTween </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Project structure | JTween ">
+    <meta name="generator" content="docfx 2.42.3.0">
+    
+    <link rel="shortcut icon" href="images/app_icon.png">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="">
+    
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="images/app_icon_navbar.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+<p>Thanks for considering contributing to JTween! Read the guidelines below before you submit an issue or create a PR.</p>
+<h1 id="project-structure">Project structure</h1>
+<p>The project structure is split between several branches</p>
+<ul>
+<li><strong>master:</strong> This is the stable branch and all releases/packages are generated from this.</li>
+<li><strong>develop:</strong> This is the primary development branch which all PRs should be made to and is generally considered less-stable. This is occasionally merged into <strong>master</strong> and a new release tag/package is generated from this.</li>
+<li><strong>releases/stable:</strong> This branch is orphaned and contains only the package contents for JTween. This is updated in sync with tagged releases on <strong>master</strong> and each commit that changes these contents should result in the version in <strong>package.json</strong> being changed.</li>
+</ul>
+<p>This structure allows for ease of development and quick testing via <strong>master</strong> or <strong>develop</strong>, but clear isolation and separation between the package distribution via <strong>releases/stable</strong>.</p>
+<h1 id="pull-requests">Pull requests</h1>
+<p>Pull requests should be made to the <a href="https://github.com/jeffcampbellmakesgames/unity-jtween/tree/develop">develop branch</a>. The types of pull requests that are highly desirable are generally:</p>
+<ul>
+<li>Bug fixes</li>
+<li>Feature improvements addressing issues discussed on the GitHub repository. This allows for wider discussion of those issues prior to any implementation and has the potential to help filter features or changes that are undesirable before time is spent working on them.</li>
+</ul>
+<h2 id="performance-issues-and-pull-requests">Performance Issues and Pull Requests</h2>
+<p>For any issues or pull requests regarding performance improvements, at minimum please include details and screenshots describing the issue in as much detail as possible and if relevant showing a before and after profile. Better yet, if you can provide a reproducible example that can be used to demonstrate the issue it will be much more likely that the issue is addressed quickly.</p>
+<h1 id="style-guide">Style Guide</h1>
+<h2 id="language-usage">Language Usage</h2>
+<ul>
+<li>Mark closed types as sealed to enable proper devirtualization (see <a href="https://blogs.unity3d.com/2016/07/26/il2cpp-optimizations-devirtualization/">here</a> for more info).</li>
+<li>Avoid LINQ usage for runtime usage except where absolutely possible (<code>ToList</code> or <code>ToArray</code> for example) and avoid using <code>ForEach</code>. Using these methods creates easily avoidable garbage (in newer versions of Unity &gt;= 5.6 this is situational to the Collection or if its being used via an interface, but easy to avoid edge cases by not using at all). Editor usage is another story as performance is not as generally important and non-usage of these can be relaxed.</li>
+</ul>
+<h2 id="layout">Layout</h2>
+<p>There is an <code>.editorconfig</code> at the root of the repository that can be used by most IDEs to help ensure these settings are automatically applied.</p>
+<ul>
+<li><strong>Indentation:</strong> 1 tab = 4 spaces (tab character)</li>
+<li><strong>Desired width:</strong> 120-130 characters max per line</li>
+<li><strong>Line Endings:</strong> Unix (LF), with a new-line at the end of each file.</li>
+<li><strong>White Space:</strong> Trim empty whitespace from the ends of lines.</li>
+</ul>
+<h2 id="naming-and-formatting">Naming and Formatting</h2>
+<table>
+<thead>
+<tr>
+<th>Object Name</th>
+<th>Notation</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Namespaces</td>
+<td>PascalCase</td>
+<td><code>JCMG.JTween.Editor</code></td>
+</tr>
+<tr>
+<td>Classes</td>
+<td>PascalCase</td>
+<td><code>SemVersion</code></td>
+</tr>
+<tr>
+<td>Methods</td>
+<td>PascalCase</td>
+<td><code>ParseVersion</code></td>
+</tr>
+<tr>
+<td>Method arguments</td>
+<td>camelCase</td>
+<td><code>oldValue</code></td>
+</tr>
+<tr>
+<td>Properties</td>
+<td>PascalCase</td>
+<td><code>Value</code></td>
+</tr>
+<tr>
+<td>Public fields</td>
+<td>camelCase</td>
+<td><code>value</code></td>
+</tr>
+<tr>
+<td>Private fields</td>
+<td>_camelCase</td>
+<td><code>_value</code></td>
+</tr>
+<tr>
+<td>Constants</td>
+<td>All Upper Caps with Snake case</td>
+<td><code>DEFAULT_VERSION</code></td>
+</tr>
+<tr>
+<td>Inline variables</td>
+<td>camelCase</td>
+<td><code>value</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="structure">Structure</h2>
+<ul>
+<li>Follow good encapsulation principles and try to limit exposing fields directly as public; unless necessary everything should be marked as private/protected unless necessary. Where public access to a field is needed, use a public property instead.</li>
+<li>Always order access from most-accessible to least (i.e, <code>public</code> to <code>private</code>).</li>
+<li>Where classes or methods are not intended for use by a user, mark these as <code>internal</code>.</li>
+<li>Order class structure like so:
+<ul>
+<li>Namespace
+<ul>
+<li>Internal classes</li>
+<li>Properties</li>
+<li>Fields</li>
+<li>Events</li>
+<li>Unity Methods</li>
+<li>Primary Methods</li>
+<li>Helper Methods</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Lines of code that are generally longer than 120-130 characters should generally be broken out into multiple lines. For example, instead of:</li>
+</ul>
+<p><code>public bool SomeMethodWithManyParams(int param1, float param2, List&lt;int&gt; param3, out int param4, out int param5)...</code></p>
+<p>do</p>
+<pre><code>public bool SomeMethodWithManyParams(
+     int param1,
+     float param2,
+     List&lt;int&gt; param3,
+     out int param4,
+     out int param5)...
+</code></pre>
+<h2 id="example-formatting">Example Formatting</h2>
+<pre><code>using System;
+using UnityEngine;
+
+namespace Example
+{
+    public class Foo : MonoBehavior
+    {
+        public int SomeValue { get { return _someValue; } }
+
+        [SerializeField]
+        private int _someValue;
+
+        private const string WARNING = &quot;Somethings wrong!&quot;;
+
+        private void Update()
+        {
+            // Do work
+            Debug.Log(Warning);
+        }
+    }
+}
+</code></pre>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/jeffcampbellmakesgames/unity-jtween/blob/develop/DocFXProject/contributing.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © 2019 Jeff Campbell<br>Generated by <strong>DocFX</strong>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>
