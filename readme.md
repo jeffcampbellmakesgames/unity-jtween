@@ -6,9 +6,11 @@ JTween is a data-driven, job-based tweening library. It places a focus on perfor
 For further information including usage, documentation, examples, contribution and style guidelines, and license information please visit [here](https://github.com/unity-jtween.io).
 
 ## Support
-If this is useful to you and/or you’d like to see future development and more tools in the future, please consider supporting it either by contributing to the Github projects (submitting bug reports or features,pull requests) or by buying me coffee using the link below. Every little bit helps!
+If this is useful to you and/or you’d like to see future development and more tools in the future, please consider supporting it either by contributing to the Github projects (submitting bug reports or features,pull requests) or by buying me coffee using any of the links below. Every little bit helps!
 
-<a href="https://www.buymeacoffee.com/PBNUzn2Y0" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/black_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I2W7GX)
+
+<a href="https://www.buymeacoffee.com/PBNUzn2Y0" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/black_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a> 
 
 ## Visual Examples
 ![Example 01](https://github.com/jeffcampbellmakesgames/unity-jtween/blob/master/DocFXProject/images/fun_example_02.gif)
