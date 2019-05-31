@@ -17,7 +17,7 @@ Using this library in your project can be done in two ways:
 ``` 
 
 ## Step 2 - Add Reference to AssemblyDefinition (optional)
-Once imported, a new AssemblyDefinition `JCMG.JTween` will become available that contains the runtime JTween code. If the scripts that you need to be able to interact with JTween, they will need to add `JCMG.JTween` as a dependency. Otherwise if they are not this step can be skipped.
+Once imported, a new AssemblyDefinition `JCMG.JTween` will become available that contains the runtime JTween code. If the scripts that you need to be able to interact with JTween are in an AssemblyDefinition, they will need to add `JCMG.JTween` as a dependency. Otherwise if they are not this step can be skipped.
 
 ## Step 3 - Add JCMG.JTween Namespace to Scripts
 In the scripts where you want to use JTWeen, make sure to import its namespace. All user-facing code is available in the `JCMG.JTween` namespace.
