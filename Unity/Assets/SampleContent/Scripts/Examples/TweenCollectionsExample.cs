@@ -76,6 +76,13 @@ namespace SampleContent
 			}
 		}
 
+		private void OnDestroy()
+		{
+			JTweenControl.Instance.RecycleSet(_tweenSetOne);
+			JTweenControl.Instance.RecycleSet(_tweenSetTwo);
+			JTweenControl.Instance.RecycleSequence(_tweenSequence);
+		}
+
 		private void Start()
 		{
 			_tweenSetOne = JTweenControl.Instance.NewSet();
@@ -115,18 +122,12 @@ namespace SampleContent
 				currentAngle += _angle;
 			}
 
-			_tweenSetOne.AddOnStarted(OnTweenSetStarted);
-			_tweenSetOne.AddOnComplete(OnTweenSetCompleted);
 			_tweenSetOne.AddOnComplete(_tweenSetTwo.Rewind);
 			_tweenSetOne.AddOnComplete(_tweenSetTwo.Play);
 
-			_tweenSetTwo.AddOnStarted(OnTweenSetStarted);
-			_tweenSetTwo.AddOnComplete(OnTweenSetCompleted);
 			_tweenSetTwo.AddOnComplete(_tweenSequence.Rewind);
 			_tweenSetTwo.AddOnComplete(_tweenSequence.Play);
 
-			_tweenSequence.AddOnStarted(OnTweenSequenceStarted);
-			_tweenSequence.AddOnComplete(OnTweenSequenceCompleted);
 			_tweenSequence.AddOnComplete(_tweenSetOne.Rewind);
 			_tweenSequence.AddOnComplete(_tweenSetOne.Play);
 
@@ -140,26 +141,6 @@ namespace SampleContent
 			pos.y = center.y;
 			pos.z = center.z + radius * Mathf.Cos(angle * Mathf.Deg2Rad);
 			return pos;
-		}
-
-		private void OnTweenSetStarted()
-		{
-			//Debug.Log("Tween Set Started");
-		}
-
-		private void OnTweenSetCompleted()
-		{
-			//Debug.Log("Tween Set Completed");
-		}
-
-		private void OnTweenSequenceStarted()
-		{
-			//Debug.Log("Tween Sequence Started");
-		}
-
-		private void OnTweenSequenceCompleted()
-		{
-			//Debug.Log("Tween Sequence Completed");
 		}
 
 		#if UNITY_EDITOR
