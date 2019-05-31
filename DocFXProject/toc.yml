@@ -14,5 +14,8 @@
 - name: Credits
   href: credits.md
 
+- name: Release Notes
+  href: release_notes.md
+
 - name: License
   href: license.md
