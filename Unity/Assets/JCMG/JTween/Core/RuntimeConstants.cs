@@ -2,8 +2,12 @@
 {
 	internal static class RuntimeConstants
 	{
+		// Pooling
 		public const int DEFAULT_FAST_LIST_SIZE = 10000;
 
+		public const int DEFAULT_RECYCLE_AMOUNT_PER_FRAME = 500;
+
+		// Warnings
 		public const string HANDLE_NOT_FOUND =
 			"[JTween] Tween not found for this handle, please remove local reference";
 

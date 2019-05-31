@@ -11,6 +11,9 @@ namespace JCMG.JTween
 		// Managed lists of tween data
 		private readonly FastList<TweenHandle> _tweenHandles = new FastList<TweenHandle>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
 
+		private readonly FastList<int> _completedTweenIndexes = new FastList<int>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+		private readonly FastList<int> _completedTweenIndexesReversed = new FastList<int>(RuntimeConstants.DEFAULT_FAST_LIST_SIZE);
+
 		public void Move(
 			Transform target,
 			Vector3 from,
@@ -413,12 +416,9 @@ namespace JCMG.JTween
 			Profiler.BeginSample(EVENT_STARTED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all started events
-			for (var i = _tweenHandleCallbackEventQueue.Count - 1; i >= 0; i--)
+			while(_tweenHandleCallbackEventQueue.Count > 0)
 			{
-				// Pop the latest element so that if a downstream error occurs we do not repeat it
-				// endlessly and block the queue.
 				var tweenEvent = _tweenHandleCallbackEventQueue.Dequeue();
-
 				tweenEvent.Started?.Invoke();
 			}
 
@@ -467,23 +467,9 @@ namespace JCMG.JTween
 						}
 					}
 
-					if (tweenState.RequiresRecycling())
+					if (_completedTweenIndexes.Length <= 500 && tweenState.RequiresRecycling())
 					{
-						Profiler.BeginSample(TRANSFORM_ACCESS_ARRAY_REMOVE_PROFILE);
-						_transformAccessArray.RemoveAtSwapBack(i);
-						Profiler.EndSample();
-
-						Profiler.BeginSample(FAST_LIST_REMOVE_AT);
-						_transforms.RemoveAt(i);
-						_tweenStates.RemoveAt(i);
-						_tweenPositions.RemoveAt(i);
-						_tweenRotations.RemoveAt(i);
-						_tweenScales.RemoveAt(i);
-						_tweenPositionLifetimes.RemoveAt(i);
-						_tweenRotationLifetimes.RemoveAt(i);
-						_tweenScaleLifetimes.RemoveAt(i);
-						_tweenHandles.RemoveAt(i);
-						Profiler.EndSample();
+						_completedTweenIndexes.Add(i);
 					}
 				}
 			}
@@ -491,17 +477,91 @@ namespace JCMG.JTween
 			// Properly dispose of the native collections
 			DisposeNativeTransformCollections();
 
+			// Only recycle up to X tweens per frame to avoid the performance hit on TransformAccessArray
+			// removal.
+			if (_completedTweenIndexes.Length > 0)
+			{
+				// Since indexes marked for removal are added from back to front, we need to reverse the
+				// order of these
+				_completedTweenIndexesReversed.Clear();
+				for (var i = _completedTweenIndexes.Length - 1; i >= 0; i--)
+				{
+					_completedTweenIndexesReversed.Add(_completedTweenIndexes.buffer[i]);
+				}
+
+				// For all of the indexes to remove, attempt as much as possible to remove them in linear ranges
+				var indexEnd = Mathf.Max(
+					_completedTweenIndexesReversed.Length - 1 - RuntimeConstants.DEFAULT_RECYCLE_AMOUNT_PER_FRAME, 0);
+				var doRemoveFlag = false;
+				var removeEndIndex = -1;
+				var removeLength = 0;
+				for (var i = _completedTweenIndexesReversed.Length - 1; i >= indexEnd; i--)
+				{
+					if (removeEndIndex == -1)
+					{
+						removeEndIndex = _completedTweenIndexesReversed.buffer[i];
+						doRemoveFlag = false;
+						removeLength = 1;
+					}
+					else
+					{
+						// If the next index is sequential to this one, increase the length of the range to remove
+						// Otherwise flag removal to start (if on the last index start removal regardless)
+						if (_completedTweenIndexesReversed.buffer[i] == removeEndIndex - removeLength)
+						{
+							removeLength = Mathf.Min(removeLength + 1, RuntimeConstants.DEFAULT_RECYCLE_AMOUNT_PER_FRAME);
+
+							if (i == indexEnd)
+							{
+								doRemoveFlag = true;
+							}
+						}
+						else
+						{
+							doRemoveFlag = true;
+						}
+
+						if(doRemoveFlag)
+						{
+							// Remove transforms from the last index in the range to the first.
+							Profiler.BeginSample(TRANSFORM_ACCESS_ARRAY_REMOVE_PROFILE);
+							for (var j = removeEndIndex; j > removeEndIndex - removeLength; j--)
+							{
+								_transformAccessArray.RemoveAtSwapBack(j);
+							}
+							Profiler.EndSample();
+
+							Profiler.BeginSample(FAST_LIST_REMOVE_AT);
+							var removeStartIndex = Mathf.Max(0, removeEndIndex - removeLength);
+							_transforms.RemoveRange(removeStartIndex, removeLength);
+							_tweenStates.RemoveRange(removeStartIndex, removeLength);
+							_tweenPositions.RemoveRange(removeStartIndex, removeLength);
+							_tweenRotations.RemoveRange(removeStartIndex, removeLength);
+							_tweenScales.RemoveRange(removeStartIndex, removeLength);
+							_tweenPositionLifetimes.RemoveRange(removeStartIndex, removeLength);
+							_tweenRotationLifetimes.RemoveRange(removeStartIndex, removeLength);
+							_tweenScaleLifetimes.RemoveRange(removeStartIndex, removeLength);
+							_tweenHandles.RemoveRange(removeStartIndex, removeLength);
+							Profiler.EndSample();
+
+							removeEndIndex = -1;
+							removeLength = 0;
+						}
+					}
+				}
+
+				_completedTweenIndexes.Clear();
+			}
+
 			Profiler.EndSample();
 
 			Profiler.BeginSample(EVENT_COMPLETED_PROFILE);
 
 			// After all sensitive native work has completed, kick out any and all completed events
-			for (var i = _tweenHandleCallbackEventQueue.Count - 1; i >= 0; i--)
+			while(_tweenHandleCallbackEventQueue.Count > 0)
 			{
-				// Pop the latest element so that if a downstream error occurs we do not repeat it
-				// endlessly and block the queue.
 				var tweenHandle = _tweenHandleCallbackEventQueue.Dequeue();
-				_tweenHandlePool.Add(tweenHandle);
+				_tweenHandlePool.AddLast(tweenHandle);
 
 				tweenHandle.Completed?.Invoke();
 			}

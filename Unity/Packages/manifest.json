@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "com.jeffcampbellmakesgames.packagetools": "https://github.com/jeffcampbellmakesgames/unity-package-tools.git#release/stable",
-    "com.unity.burst": "1.0.0",
-    "com.unity.collections": "0.0.9-preview.18",
-    "com.unity.jobs": "0.0.7-preview.11",
+    "com.unity.burst": "1.0.4",
+    "com.unity.collections": "0.0.9-preview.20",
+    "com.unity.jobs": "0.0.7-preview.13",
     "com.unity.mathematics": "1.0.1",
     "com.unity.package-manager-ui": "2.1.2",
     "com.unity.modules.ai": "1.0.0",

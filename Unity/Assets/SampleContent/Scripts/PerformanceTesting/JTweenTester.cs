@@ -18,10 +18,13 @@ namespace SampleContent
 		private Vector3[] _from;
 		private Vector3[] _to;
 
+		private JTweenControl _jTweenControl;
+
 		protected override void Awake()
 		{
 			base.Awake();
 
+			_jTweenControl = JTweenControl.Instance;
 			_waitWhileTweensComplete = new WaitForSeconds(_duration * ( _loopCount + 1) + 0.1f);
 		}
 
@@ -45,7 +48,7 @@ namespace SampleContent
 
 			for (var i = 0; i < trs.Length; i++)
 			{
-				JTweenControl.Instance.Move(
+				_jTweenControl.Move(
 					trs[i],
 					trs[i].position,
 					trs[i].position + Vector3.forward * 100f,
@@ -71,7 +74,7 @@ namespace SampleContent
 				_to[i] += Vector3.forward * 100f;
 			}
 
-			JTweenControl.Instance.BatchMove(
+			_jTweenControl.BatchMove(
 				trs,
 				_from,
 				_to,
@@ -100,7 +103,7 @@ namespace SampleContent
 				while (randomSpawnAmount > 0)
 				{
 					var tr = queue.Dequeue();
-					JTweenControl.Instance.Move(
+					_jTweenControl.Move(
 						tr,
 						tr.position,
 						tr.position + Vector3.forward * 100f,
@@ -146,7 +149,7 @@ namespace SampleContent
 			{
 				var numberOfItemsRemaining = trs.Length - currentCount;
 				var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
-				JTweenControl.Instance.BatchMoveSlice(
+				_jTweenControl.BatchMoveSlice(
 					trs,
 					_from,
 					_to,
@@ -197,7 +200,7 @@ namespace SampleContent
 					for (var j = i; j < i + randomSpawnAmount; j++)
 					{
 						var tr = trs[j];
-						JTweenControl.Instance.Move(
+						_jTweenControl.Move(
 							tr,
 							_from[j],
 							_to[j],
@@ -219,7 +222,7 @@ namespace SampleContent
 					var numberOfItemsRemaining = trs.Length - i;
 					var randomSpawnAmount = Mathf.Min(Random.Range(_minSpawn, _maxSpawn), numberOfItemsRemaining);
 
-					JTweenControl.Instance.BatchMoveSlice(
+					_jTweenControl.BatchMoveSlice(
 						trs,
 						_from,
 						_to,
@@ -252,7 +255,7 @@ namespace SampleContent
 			yield return _delayWaitToStartTween;
 
 			var tr = trs[0];
-			JTweenControl.Instance.Move(
+			_jTweenControl.Move(
 				tr,
 				tr.position,
 				tr.position + Vector3.forward * 100f,
@@ -262,7 +265,7 @@ namespace SampleContent
 				_loopType,
 				_loopCount);
 
-			JTweenControl.Instance.Scale(
+			_jTweenControl.Scale(
 				tr,
 				tr.localScale,
 				tr.localScale * 10,
@@ -271,7 +274,7 @@ namespace SampleContent
 				_loopType,
 				_loopCount);
 
-			JTweenControl.Instance.Rotate(
+			_jTweenControl.Rotate(
 				tr,
 				Quaternion.identity,
 				Quaternion.Euler(Random.Range(0, 180), Random.Range(0, 180), Random.Range(0, 180)),
@@ -298,7 +301,7 @@ namespace SampleContent
 			for (var i = 0; i < trs.Length; i++)
 			{
 				var tr = trs[i];
-				JTweenControl.Instance.Move(
+				_jTweenControl.Move(
 					tr,
 					tr.position,
 					Vector3.zero,
@@ -308,7 +311,7 @@ namespace SampleContent
 					_loopType,
 					_loopCount);
 
-				JTweenControl.Instance.Scale(
+				_jTweenControl.Scale(
 					tr,
 					tr.localScale,
 					tr.localScale * .75f,
@@ -317,7 +320,7 @@ namespace SampleContent
 					_loopType,
 					_loopCount);
 
-				JTweenControl.Instance.RotateOnAxis(
+				_jTweenControl.RotateOnAxis(
 					tr,
 					360,
 					_duration,

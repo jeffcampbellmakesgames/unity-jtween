@@ -25,5 +25,39 @@ namespace JCMG.JTween.Editor
 
 			EditorGUIUtility.PingObject(jTweenControl.gameObject);
 		}
+
+		[MenuItem(EditorConstants.MENU_ITEM_HELP_ROOT + "Open Github Page")]
+		public static void OpenBrowserToGithub()
+		{
+			Application.OpenURL(EditorConstants.GITHUB_MASTER_URL);
+		}
+
+		[MenuItem(EditorConstants.MENU_ITEM_HELP_ROOT + "Open Online Manual")]
+		public static void OpenBrowserToOnlineManual()
+		{
+			Application.OpenURL(EditorConstants.GITHUB_DOCUMENTATION_URL);
+		}
+
+		[MenuItem(EditorConstants.MENU_ITEM_HELP_ROOT + "Open Local Manual")]
+		public static void OpenLocalManual()
+		{
+			var assetPath = AssetDatabase.GUIDToAssetPath(EditorConstants.HELP_PDF_GUID);
+			var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+			AssetDatabase.OpenAsset(asset);
+		}
+
+		[MenuItem(EditorConstants.MENU_ITEM_HELP_ROOT + "Open Local API Reference")]
+		public static void OpenLocalAPIReference()
+		{
+			var assetPath = AssetDatabase.GUIDToAssetPath(EditorConstants.API_PDF_GUID);
+			var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+			AssetDatabase.OpenAsset(asset);
+		}
+
+		[MenuItem(EditorConstants.MENU_ITEM_HELP_ROOT + "Donate")]
+		public static void OpenDonateCoffeePage()
+		{
+			Application.OpenURL(EditorConstants.DONATE_COFFEE_URL);
+		}
 	}
 }
