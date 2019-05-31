@@ -944,6 +944,32 @@ references:
   isSpec: "True"
   fullName: JCMG.JTween.JTweenControl.NewSet
   nameWithType: JTweenControl.NewSet
+- uid: JCMG.JTween.JTweenControl.RecycleSequence(JCMG.JTween.ITweenSequence)
+  name: RecycleSequence(ITweenSequence)
+  href: api/JCMG.JTween.JTweenControl.html#JCMG_JTween_JTweenControl_RecycleSequence_JCMG_JTween_ITweenSequence_
+  commentId: M:JCMG.JTween.JTweenControl.RecycleSequence(JCMG.JTween.ITweenSequence)
+  fullName: JCMG.JTween.JTweenControl.RecycleSequence(JCMG.JTween.ITweenSequence)
+  nameWithType: JTweenControl.RecycleSequence(ITweenSequence)
+- uid: JCMG.JTween.JTweenControl.RecycleSequence*
+  name: RecycleSequence
+  href: api/JCMG.JTween.JTweenControl.html#JCMG_JTween_JTweenControl_RecycleSequence_
+  commentId: Overload:JCMG.JTween.JTweenControl.RecycleSequence
+  isSpec: "True"
+  fullName: JCMG.JTween.JTweenControl.RecycleSequence
+  nameWithType: JTweenControl.RecycleSequence
+- uid: JCMG.JTween.JTweenControl.RecycleSet(JCMG.JTween.ITweenSet)
+  name: RecycleSet(ITweenSet)
+  href: api/JCMG.JTween.JTweenControl.html#JCMG_JTween_JTweenControl_RecycleSet_JCMG_JTween_ITweenSet_
+  commentId: M:JCMG.JTween.JTweenControl.RecycleSet(JCMG.JTween.ITweenSet)
+  fullName: JCMG.JTween.JTweenControl.RecycleSet(JCMG.JTween.ITweenSet)
+  nameWithType: JTweenControl.RecycleSet(ITweenSet)
+- uid: JCMG.JTween.JTweenControl.RecycleSet*
+  name: RecycleSet
+  href: api/JCMG.JTween.JTweenControl.html#JCMG_JTween_JTweenControl_RecycleSet_
+  commentId: Overload:JCMG.JTween.JTweenControl.RecycleSet
+  isSpec: "True"
+  fullName: JCMG.JTween.JTweenControl.RecycleSet
+  nameWithType: JTweenControl.RecycleSet
 - uid: JCMG.JTween.JTweenControl.Rotate(UnityEngine.Transform,UnityEngine.Quaternion,UnityEngine.Quaternion,System.Single,JCMG.JTween.ITweenHandle@,JCMG.JTween.SpaceType,JCMG.JTween.EaseType,JCMG.JTween.LoopType,System.Int32)
   name: Rotate(Transform, Quaternion, Quaternion, Single, out ITweenHandle, SpaceType, EaseType, LoopType, Int32)
   href: api/JCMG.JTween.JTweenControl.html#JCMG_JTween_JTweenControl_Rotate_UnityEngine_Transform_UnityEngine_Quaternion_UnityEngine_Quaternion_System_Single_JCMG_JTween_ITweenHandle__JCMG_JTween_SpaceType_JCMG_JTween_EaseType_JCMG_JTween_LoopType_System_Int32_
