@@ -1,0 +1,19 @@
+{
+    "name": "JCMG.JTween.Editor.Tests",
+    "references": [
+        "GUID:842bf62986bbf2f4591cfd1f62569744"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
