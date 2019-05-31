@@ -1,3 +1,7 @@
+1.0.1
+----
+Fixed issue with package dependency versions for preview versions
+
 v1.0.0
 ----
 This release marks the first official version of JTween and supports the following features:
